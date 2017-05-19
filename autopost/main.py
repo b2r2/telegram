@@ -17,7 +17,7 @@ def log(message, answer):
         str(message.from_user.id), message.text))
     print(answer)
 
-chat_id = "@autest"
+chat_id = settings.chat_id
 # chat_id = message.from_user_id
 
 
