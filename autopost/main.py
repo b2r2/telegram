@@ -25,17 +25,17 @@ def handle_start(message):
 
 @bot.message_handler(commands=['help'])
 def handle_help(message):
-    bot.send_message(message.from_user.id, "Bot's help!")
+    bot.send_message(message.from_user.id, "Мои возможности "
+                     "весьма ограниченны...\n"
+                     "Я умею отправлять фото и текст...")
 
 
-@bot.message_handler(commands=['stop'])
-def handle_stop(message):
-    pass
+@bot.message_handler(content_types=['photo'])
+def handle_photo(message):
+    smallest_photo = message.photo[0].file_id
+    bot.send_photo(chat_id, smallest_photo)
 
 
-# @bot.message_hanler(content_types=['photo'])
-# def handle_photo(message):
-#     user_
 @bot.message_handler(content_types=['text'])
 def handle_text(message):
     bot.send_message(chat_id, message.text)
