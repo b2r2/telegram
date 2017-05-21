@@ -10,7 +10,6 @@ bot = telebot.TeleBot(settings.token)
 
 
 chat_id = settings.chat_id
-# chat_id = message.from_user_id
 
 
 @bot.message_handler(commands=['start'])
@@ -32,13 +31,18 @@ def handle_help(message):
 
 @bot.message_handler(content_types=['photo'])
 def handle_photo(message):
-    smallest_photo = message.photo[0].file_id
-    bot.send_photo(chat_id, smallest_photo)
+    try:
+        smallest_photo = message.photo[0].file_id
+        bot.send_photo(chat_id, smallest_photo)
+    except Exception as err:
+        functions.log_error(err, message)
+        bot.send_message(message.from_user.id, "Ошибка загрузки фото.")
 
 
 @bot.message_handler(content_types=['text'])
 def handle_text(message):
     bot.send_message(chat_id, message.text)
-    functions.log(message, message.text)
+    functions.log_error('tet', message)
+
 
 bot.polling(none_stop=True, interval=0)
