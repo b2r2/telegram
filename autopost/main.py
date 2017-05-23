@@ -3,7 +3,6 @@
 
 import telebot
 import settings
-import functions
 
 
 bot = telebot.TeleBot(settings.token)
@@ -26,23 +25,30 @@ def handle_start(message):
 def handle_help(message):
     bot.send_message(message.from_user.id, "Мои возможности "
                      "весьма ограниченны...\n"
-                     "Я умею отправлять фото и текст...")
+                     "Я умею отправлять фото, смайлики, стикеры и текст...")
 
 
 @bot.message_handler(content_types=['photo'])
 def handle_photo(message):
-    try:
-        smallest_photo = message.photo[0].file_id
-        bot.send_photo(chat_id, smallest_photo)
-    except Exception as err:
-        functions.log_error(err, message)
-        bot.send_message(message.from_user.id, "Ошибка загрузки фото.")
+    smallest_photo = message.photo[0].file_id
+    bot.send_photo(chat_id, smallest_photo)
+
+
+@bot.message_handler(content_types=['sticker'])
+def handle_sticker(message):
+    sticker = message.sticker.file_id
+    bot.send_sticker(chat_id, sticker)
+
+
+@bot.message_handler(content_types=['audio'])
+def handle_audio(message):
+    audio = message.audio.file_id
+    bot.send_audio(chat_id, audio)
 
 
 @bot.message_handler(content_types=['text'])
 def handle_text(message):
     bot.send_message(chat_id, message.text)
-    functions.log_error('tet', message)
 
 
-bot.polling(none_stop=True, interval=0)
+# bot.polling(none_stop=True, interval=0)
