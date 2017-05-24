@@ -33,9 +33,9 @@ def handle_help(message):
 @bot.message_handler(content_types=['photo'])
 def handle_photo(message):
     try:
-        smallest_photo = message.photo[0].file_id
-        functions.check_message(smallest_photo)
-        bot.send_photo(chat_id, smallest_photo)
+        msg_photo = message.photo[0].file_id
+        functions.check_message(msg_photo)
+        bot.send_photo(chat_id, msg_photo)
         log.log_info()
     except Exception:
         log.log_err()
@@ -44,9 +44,9 @@ def handle_photo(message):
 @bot.message_handler(content_types=['sticker'])
 def handle_sticker(message):
     try:
-        sticker = message.sticker.file_id
-        functions.check_message(sticker)
-        bot.send_sticker(chat_id, sticker)
+        msg_sticker = message.sticker.file_id
+        functions.check_message(msg_sticker)
+        bot.send_sticker(chat_id, msg_sticker)
         log.log_info()
     except Exception:
         log.log_err()
@@ -55,9 +55,20 @@ def handle_sticker(message):
 @bot.message_handler(content_types=['audio'])
 def handle_audio(message):
     try:
-        audio = message.audio.file_id
-        functions.check_message(audio)
-        bot.send_audio(chat_id, audio)
+        msg_audio = message.audio.file_id
+        functions.check_message(msg_audio)
+        bot.send_audio(chat_id, msg_audio)
+        log.log_info()
+    except Exception:
+        log.log_err()
+
+
+@bot.message_handler(content_types=['document'])
+def handle_document(message):
+    try:
+        msg_document = message.document.file_id
+        functions.check_message(msg_document)
+        bot.send_document(chat_id, msg_document)
         log.log_info()
     except Exception:
         log.log_err()

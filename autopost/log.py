@@ -29,7 +29,7 @@ logger.addHandler(copy_filehandler)
 
 
 def log_err():
-    logger.error('error!')
+    logger.exception('Error!')
 
 
 def log_info():
