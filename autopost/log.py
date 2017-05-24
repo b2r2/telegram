@@ -32,6 +32,6 @@ def log_err():
     logger.exception('Error!')
 
 
-def log_info():
-    logger.info('Start handler...')
+def log_info(msg):
+    logger.info('Start handler ' + msg)
     logger.info('Successful\n')
