@@ -66,6 +66,7 @@ def handle_audio(message):
 @bot.message_handler(content_types=['text'])
 def handle_text(message):
     bot.send_message(chat_id, message.text)
+    log.log_info()
 
 
 bot.polling(none_stop=True, interval=0)

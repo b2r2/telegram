@@ -6,7 +6,7 @@ import settings
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
+logger.setLevel(logging.INFO)
 
 formatter = logging.Formatter('%(asctime)s:  %(levelname)s:'
                               ' %(name)s: %(message)s')
@@ -34,4 +34,4 @@ def log_err():
 
 def log_info():
     logger.info('Start handler...')
-    logger.info('Successful')
+    logger.info('Successful\n')
