@@ -3,29 +3,35 @@
 
 import logging
 import settings
-import main
 
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
-formatter = logging.Formatter('%(asctime)s:  %(levelname)s: '
-                              '%(name)s: %(message)s')
+formatter = logging.Formatter('%(asctime)s:  %(levelname)s:'
+                              ' %(name)s: %(message)s')
 
 console = logging.StreamHandler()
 console.setFormatter(formatter)
+console.setLevel(logging.INFO)
 
 filehandler = logging.FileHandler(settings.logs_path)
 filehandler.setFormatter(formatter)
+filehandler.setLevel(logging.ERROR)
 
-# copy_filehandler = logging.Filehandler(settings.copy_logs_path)
-# copy_filehandler.setFormatter(formatter)
+copy_filehandler = logging.FileHandler(settings.copy_logs_path)
+copy_filehandler.setFormatter(formatter)
+copy_filehandler.setLevel(logging.ERROR)
 
 logger.addHandler(console)
 logger.addHandler(filehandler)
-# logger.addHandler(copy_filehandler)
+logger.addHandler(copy_filehandler)
 
 
-if __name__ == '__main__':
-    main.bot.polling(none_stop=True, interval=0)
-    logger.warning('error!')
+def log_err():
+    logger.error('error!')
+
+
+def log_info():
+    logger.info('Start handler...')
+    logger.info('Successful')

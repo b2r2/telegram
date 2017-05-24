@@ -3,6 +3,8 @@
 
 import telebot
 import settings
+import log
+import functions
 
 
 bot = telebot.TeleBot(settings.token)
@@ -30,20 +32,35 @@ def handle_help(message):
 
 @bot.message_handler(content_types=['photo'])
 def handle_photo(message):
-    smallest_photo = message.photo[0].file_id
-    bot.send_photo(chat_id, smallest_photo)
+    try:
+        smallest_photo = message.photo[0].file_id
+        functions.check_message(smallest_photo)
+        bot.send_photo(chat_id, smallest_photo)
+        log.log_info()
+    except Exception:
+        log.log_err()
 
 
 @bot.message_handler(content_types=['sticker'])
 def handle_sticker(message):
-    sticker = message.sticker.file_id
-    bot.send_sticker(chat_id, sticker)
+    try:
+        sticker = message.sticker.file_id
+        functions.check_message(sticker)
+        bot.send_sticker(chat_id, sticker)
+        log.log_info()
+    except Exception:
+        log.log_err()
 
 
 @bot.message_handler(content_types=['audio'])
 def handle_audio(message):
-    audio = message.audio.file_id
-    bot.send_audio(chat_id, audio)
+    try:
+        audio = message.audio.file_id
+        functions.check_message(audio)
+        bot.send_audio(chat_id, audio)
+        log.log_info()
+    except Exception:
+        log.log_err()
 
 
 @bot.message_handler(content_types=['text'])
@@ -51,4 +68,4 @@ def handle_text(message):
     bot.send_message(chat_id, message.text)
 
 
-# bot.polling(none_stop=True, interval=0)
+bot.polling(none_stop=True, interval=0)
