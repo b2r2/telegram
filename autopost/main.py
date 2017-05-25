@@ -36,7 +36,7 @@ def handle_photo(message):
         bot.send_photo(chat_id, msg_photo)
         log.log_info('photo')
     except Exception:
-        log.log_err()
+        log.log_err('photo')
 
 
 @bot.message_handler(content_types=['sticker'])
@@ -46,7 +46,7 @@ def handle_sticker(message):
         bot.send_sticker(chat_id, msg_sticker)
         log.log_info('stiker')
     except Exception:
-        log.log_err()
+        log.log_err('stiker')
 
 
 @bot.message_handler(content_types=['audio'])
@@ -56,7 +56,7 @@ def handle_audio(message):
         bot.send_audio(chat_id, msg_audio)
         log.log_info('audio')
     except Exception:
-        log.log_err()
+        log.log_err('audio')
 
 
 @bot.message_handler(content_types=['document'])
@@ -66,7 +66,7 @@ def handle_document(message):
         bot.send_document(chat_id, msg_document)
         log.log_info('document')
     except Exception:
-        log.log_err()
+        log.log_err('document')
 
 
 @bot.message_handler(content_types=['video'])
@@ -76,7 +76,7 @@ def handle_video(message):
         bot.send_video(chat_id, msg_video)
         log.log_info('video')
     except Exception:
-        log.log_err()
+        log.log_err('video')
 
 
 @bot.message_handler(content_types=['text'])

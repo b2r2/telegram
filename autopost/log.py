@@ -8,8 +8,9 @@ import settings
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-formatter = logging.Formatter('%(asctime)s:  %(levelname)s:'
-                              ' %(name)s: %(message)s')
+formatter = logging.Formatter(fmt='%(levelname)s:%(name)s: %(message)s'
+                              ' (%(asctime)s: line: %(lineno)d)',
+                              datefmt='%Y-%m-%d %H:%M:%S')
 
 console = logging.StreamHandler()
 console.setFormatter(formatter)
@@ -28,10 +29,10 @@ logger.addHandler(filehandler)
 logger.addHandler(copy_filehandler)
 
 
-def log_err():
-    logger.exception('Error!')
+def log_err(msg):
+    logger.exception('Message error:%-10%' % msg.upper())
 
 
 def log_info(msg):
-    logger.info('Start handler ' + msg)
-    logger.info('Successful\n')
+    logger.info('Start handler: %-10s' % msg.upper())
+    logger.info('Successful:    %-10s' % msg.upper())
