@@ -1,9 +1,56 @@
 # -*- coding: utf-8 -*-
 
-
 import telebot
 import settings
-import log
+
+
+#########################################################################
+# LOG CONFIG ############################################################
+#########################################################################
+import logging
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter(fmt='%(levelname)s:%(name)s# %(message)s'
+                              '# (%(asctime)s)',
+                              datefmt='%Y-%m-%d %H:%M:%S')
+
+console = logging.StreamHandler()
+console.setFormatter(formatter)
+console.setLevel(logging.INFO)
+
+filehandler = logging.FileHandler(settings.logs_path)
+filehandler.setFormatter(formatter)
+filehandler.setLevel(logging.ERROR)
+
+copy_filehandler = logging.FileHandler(settings.copy_logs_path)
+copy_filehandler.setFormatter(formatter)
+copy_filehandler.setLevel(logging.ERROR)
+
+logger.addHandler(console)
+logger.addHandler(filehandler)
+logger.addHandler(copy_filehandler)
+
+
+#########################################################################
+#  FUNCTIONS ############################################################
+#########################################################################
+
+
+def log_err(msg, chat_id):
+    logger.exception('Error sending a file(type %s) to the channel: %s',
+                     msg.upper(), chat_id)
+
+
+def log_info(msg):
+    logger.info('Start handler: %-10s' % msg.upper())
+    logger.info('Successful: %-13s' % msg.upper())
+
+
+##########################################################################
+##########################################################################
 
 
 bot = telebot.TeleBot(settings.token)
@@ -34,9 +81,9 @@ def handle_photo(message):
     try:
         msg_photo = message.photo[0].file_id
         bot.send_photo(chat_id, msg_photo)
-        log.log_info('photo')
+        log_info('photo')
     except Exception:
-        log.log_err('photo', chat_id)
+        log_err('photo', chat_id)
 
 
 @bot.message_handler(content_types=['sticker'])
@@ -44,9 +91,9 @@ def handle_sticker(message):
     try:
         msg_sticker = message.sticker.file_id
         bot.send_sticker(chat_id, msg_sticker)
-        log.log_info('stiker')
+        log_info('stiker')
     except Exception:
-        log.log_err('stiker', chat_id)
+        log_err('stiker', chat_id)
 
 
 @bot.message_handler(content_types=['audio'])
@@ -54,9 +101,9 @@ def handle_audio(message):
     try:
         msg_audio = message.audio.file_id
         bot.send_audio(chat_id, msg_audio)
-        log.log_info('audio')
+        log_info('audio')
     except Exception:
-        log.log_err('audio', chat_id)
+        log_err('audio', chat_id)
 
 
 @bot.message_handler(content_types=['document'])
@@ -64,9 +111,9 @@ def handle_document(message):
     try:
         msg_document = message.document.file_id
         bot.send_document(chat_id, msg_document)
-        log.log_info('document')
+        log_info('document')
     except Exception:
-        log.log_err('document', chat_id)
+        log_err('document', chat_id)
 
 
 @bot.message_handler(content_types=['video'])
@@ -74,15 +121,15 @@ def handle_video(message):
     try:
         msg_video = message.video.file_id
         bot.send_video(chat_id, msg_video)
-        log.log_info('video')
+        log_info('video')
     except Exception:
-        log.log_err('video', chat_id)
+        log_err('video', chat_id)
 
 
 @bot.message_handler(content_types=['text'])
 def handle_text(message):
     bot.send_message(chat_id, message.text)
-    log.log_info('text')
+    log_info('text')
 
 
 # @bot.message_handler()
@@ -94,5 +141,7 @@ def handle_text(message):
 #     except Exception:
 #         log.log_err('forward message', chat_id)
 
+
+# bot.forward_message(chat_id, message.chat.id)
 
 bot.polling(none_stop=True, interval=0)
