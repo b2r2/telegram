@@ -4,4 +4,6 @@ echoBot/
 *.swo
 *.swp
 *.swn
+*.txt
+test/
 log/
