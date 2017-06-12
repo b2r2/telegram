@@ -71,7 +71,6 @@ def handle_message(message):
     elif user_id in user_will_send_advertising:
         handle_advertising_message(message)
         user_will_send_advertising.remove(user_id)
-
     else:
         @bot.message_handler(commands=['start'])
         def handle_start(message):
