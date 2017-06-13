@@ -55,24 +55,24 @@ bot = telebot.TeleBot(settings.token)
 chat_id = settings.chat_id
 
 user_will_send_advertising = set()
+emit_advertising_content = {}
 
 
-def handle_advertising_message(message):
-    help_msg = """Get me your advertising message (e.g. @name)
+@bot.message_handler(commands=['advertising'])
+def handle_advertising(message):
+    user_will_send_advertising.add(message.from_user.id)
+    help_msg = """Give me your advertising message (e.g. @name_channel)
     \nPlease write an advertising post:"""
     bot.send_message(message.from_user.id, help_msg)
 
 
-@bot.message_handler(func=lambda message: True)
-def handle_message(message):
-    user_id = message.from_user.id
-    if message.text == '/advertising':
-        user_will_send_advertising.add(user_id)
-    elif user_id in user_will_send_advertising:
-        handle_advertising_message(message)
-        user_will_send_advertising.remove(user_id)
-    else:
-        pass
+@bot.message_handler(func=lambda message: message.from_user.id in
+                     user_will_send_advertising)
+def handle_advertising_message(message):
+    user_will_send_advertising.remove(message.from_user.id)
+    emit_advertising_content[message.from_user.id] = message.text
+    bot.send_message(message.from_user.id,
+                     emit_advertising_content[message.from_user.id])
 
 
 @bot.message_handler(commands=['start'])
