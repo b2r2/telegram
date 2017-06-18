@@ -2,6 +2,7 @@
 
 import telebot
 import settings
+import utils.json_methods as jm
 
 
 #########################################################################
@@ -71,8 +72,14 @@ def handle_advertising(message):
 def handle_advertising_message(message):
     user_will_send_advertising.remove(message.from_user.id)
     emit_advertising_content[message.from_user.id] = message.text
+
+    bot.send_message(message.from_user.id, "It is your advertising message:")
     bot.send_message(message.from_user.id,
                      emit_advertising_content[message.from_user.id])
+    bot.send_message(message.from_user.id, "If wrong try again.")
+
+    jm.save_adversiting_user_post(message.from_user.id, message.text)
+#    jm.delete_double_adversiting_user_post()
 
 
 @bot.message_handler(commands=['start'])
@@ -147,6 +154,11 @@ def handle_video(message):
 def handle_text(message):
     bot.send_message(chat_id, message.text)
     log_info('text')
+
+
+# @bot.message_handler()
+# def handle_delete(message):
+#     bot.delete_message(chat_id, message.message_id)
 
 
 # @bot.message_handler(regexp=".*")
