@@ -2,7 +2,7 @@
 
 import telebot
 import settings
-import utils.json_methods as jm
+import utils.db_methods
 
 
 #########################################################################
@@ -78,8 +78,9 @@ def handle_advertising_message(message):
                      emit_advertising_content[message.from_user.id])
     bot.send_message(message.from_user.id, "If wrong try again.")
 
-    jm.save_adversiting_user_post(message.from_user.id, message.text)
-#    jm.delete_double_adversiting_user_post()
+    utils.db_methods.save_db(message.from_user.id,
+                             message.text,
+                             message.date)
 
 
 @bot.message_handler(commands=['start'])
