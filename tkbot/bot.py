@@ -40,14 +40,13 @@ logger.addHandler(copy_filehandler)
 #########################################################################
 
 
-def log_err(msg, chat_id):
-    logger.exception('Error sending a file(type %s) to the channel: %s',
-                     msg.upper(), chat_id)
+def logErr(function_name, msg):
+    logger.exception('Error:  %s. Sending a file(type %s)',
+                     function_name, msg)
 
 
-def log_info(msg):
-    logger.info('Start handler: %-10s' % msg.upper())
-    logger.info('Successful: %-13s' % msg.upper())
+def logInfo(function_name):
+    logger.info('%s: success', function_name)
 
 ##########################################################################
 
@@ -60,7 +59,7 @@ emit_advertising_content = {}
 
 
 @bot.message_handler(commands=['advertising'])
-def handle_advertising(message):
+def handleAdvertising(message):
     user_will_send_advertising.add(message.from_user.id)
     help_msg = """Give me your advertising message (e.g. @name_channel)
     \nPlease write an advertising post:"""
@@ -69,7 +68,7 @@ def handle_advertising(message):
 
 @bot.message_handler(func=lambda message: message.from_user.id in
                      user_will_send_advertising)
-def handle_advertising_message(message):
+def handleAdvertisingMessage(message):
     user_will_send_advertising.remove(message.from_user.id)
     emit_advertising_content[message.from_user.id] = message.text
 
@@ -78,13 +77,13 @@ def handle_advertising_message(message):
                      emit_advertising_content[message.from_user.id])
     bot.send_message(message.from_user.id, "If wrong try again.")
 
-    utils.db_methods.save_db(message.from_user.id,
-                             message.text,
-                             message.date)
+    utils.db_methods.appendMessageDatabase(message.from_user.id,
+                                           message.text,
+                                           message.date)
 
 
 @bot.message_handler(commands=['start'])
-def handle_start(message):
+def handleStart(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
     user_markup.row('/start', '/help')
     user_markup.row('/advertising')
@@ -96,74 +95,78 @@ def handle_start(message):
 
 
 @bot.message_handler(commands=['help'])
-def handle_help(message):
+def handleHelp(message):
     help_msg = """My options are very limited..."""
     bot.send_message(message.from_user.id, help_msg)
 
 
 @bot.message_handler(content_types=['photo'])
-def handle_photo(message):
+def handlePhoto(message):
     try:
         msg_photo = message.photo[0].file_id
         bot.send_photo(chat_id, msg_photo)
-        log_info('photo')
-    except Exception:
-        log_err('photo', chat_id)
+    except Exception as err:
+        logErr(err, handlePhoto.__name__)
+    else:
+        logInfo(handlePhoto.__name__)
 
 
 @bot.message_handler(content_types=['sticker'])
-def handle_sticker(message):
+def handleSticker(message):
     try:
         msg_sticker = message.sticker.file_id
         bot.send_sticker(chat_id, msg_sticker)
-        log_info('stiker')
-    except Exception:
-        log_err('stiker', chat_id)
+    except Exception as err:
+        logErr(err, handleSticker.__name__)
+    else:
+        logInfo(handleSticker.__name__)
 
 
 @bot.message_handler(content_types=['audio'])
-def handle_audio(message):
+def handleAudio(message):
     try:
         msg_audio = message.audio.file_id
         bot.send_audio(chat_id, msg_audio)
-        log_info('audio')
-    except Exception:
-        log_err('audio', chat_id)
+    except Exception as err:
+        logErr(err, handleAudio.__name__)
+    else:
+        logInfo(handleAudio.__name__)
 
 
 @bot.message_handler(content_types=['document'])
-def handle_document(message):
+def handleDocument(message):
     try:
         msg_document = message.document.file_id
         bot.send_document(chat_id, msg_document)
-        log_info('document')
-    except Exception:
-        log_err('document', chat_id)
+    except Exception as err:
+        logErr(err, handleDocument.__name__)
+    else:
+        logInfo(handleDocument.__name__)
 
 
 @bot.message_handler(content_types=['video'])
-def handle_video(message):
+def handleVideo(message):
     try:
         msg_video = message.video.file_id
         bot.send_video(chat_id, msg_video)
-        log_info('video')
-    except Exception:
-        log_err('video', chat_id)
+    except Exception as err:
+        logErr(err, handleVideo.__name__)
+    else:
+        logInfo(handleVideo.__name__)
 
 
 @bot.message_handler(content_types=['text'])
-def handle_text(message):
-    bot.send_message(chat_id, message.text)
-    log_info('text')
-
-
-# @bot.message_handler()
-# def handle_delete(message):
-#     bot.delete_message(chat_id, message.message_id)
+def handleText(message):
+    try:
+        bot.send_message(chat_id, message.text)
+    except Exception as err:
+        logErr(err, handleText)
+    else:
+        logInfo(handleText.__name__)
 
 
 # @bot.message_handler(regexp=".*")
-# def handle_message(message):
+# def handleMessage(message):
 #     print(message)
 
 

@@ -1,4 +1,4 @@
-def return_concatenation_string(**advertising_messages):
+def returnConcatenationString(**advertising_messages):
     advertising_message = []
     for message in advertising_messages.values():
         advertising_message.append(str(message))
