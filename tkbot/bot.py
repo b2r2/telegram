@@ -81,6 +81,8 @@ def handleAdvertisingMessage(message):
                                            message.text,
                                            message.date)
 
+    utils.db_methods.popMessageDatabase(message.from_user.id)
+
 
 @bot.message_handler(commands=['start'])
 def handleStart(message):

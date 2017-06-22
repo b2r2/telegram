@@ -65,9 +65,9 @@ def appendMessageDatabase(user_id, text, date):
 
     sql = """ CREATE TABLE IF NOT EXISTS ADV_USERS
     (PID INTEGER PRIMARY KEY AUTOINCREMENT,
-    USR_ID INT,
+    USR_ID INTEGER,
     MESSAGE TEXT,
-    DATE INT) """
+    DATE INTEGER) """
 
     cursor.execute(sql)
 
@@ -78,17 +78,31 @@ def appendMessageDatabase(user_id, text, date):
         cursor.execute(sql, params)
         connection.commit()
     except sqlite3.DatabaseError as err:
-        print('Error:', err)
         logErr(err, appendMessageDatabase.__name__)
     else:
         connection.commit()
         logInfo(appendMessageDatabase.__name__)
+    finally:
+        connection.close()
 
-    connection.close()
 
+def popMessageDatabase(user_id):
+    connection = sqlite3.connect(db_path)
 
-def popMessageDatabase():
-    pass
+    cursor = connection.cursor()
+
+    sql = ("SELECT USR_ID, DATE FROM ADV_USERS WHERE USR_ID ORDER BY ?",
+           (user_id))
+    cursor.execute(sql)
+
+    try:
+        result = cursor.fetchall()
+    except sqlite3.DatabaseError as err:
+        logErr(err, popMessageDatabase.__name__)
+    else:
+        print(result)
+    finally:
+        connection.close()
 
 
 def findDuplicateMessageDatabase():
