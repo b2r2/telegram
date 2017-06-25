@@ -2,7 +2,7 @@
 
 import telebot
 import settings
-import utils.db_methods
+import utils.db
 
 
 #########################################################################
@@ -56,6 +56,7 @@ chat_id = settings.chat_id
 
 user_will_send_advertising = set()
 emit_advertising_content = {}
+db = utils.db.Database()
 
 
 @bot.message_handler(commands=['advertising'])
@@ -77,11 +78,11 @@ def handleAdvertisingMessage(message):
                      emit_advertising_content[message.from_user.id])
     bot.send_message(message.from_user.id, "If wrong try again.")
 
-    utils.db_methods.appendMessageDatabase(message.from_user.id,
-                                           message.text,
-                                           message.date)
+    db.replaceMessage(message.from_user.id,
+                      message.text,
+                      message.date)
 
-    utils.db_methods.popMessageDatabase(message.from_user.id)
+    db.read()
 
 
 @bot.message_handler(commands=['start'])
