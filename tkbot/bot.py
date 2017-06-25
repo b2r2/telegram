@@ -81,8 +81,8 @@ def handleAdvertisingMessage(message):
     db.replaceMessage(message.from_user.id,
                       message.text,
                       message.date)
-    db.read()
 
+    db.read()
 
 @bot.message_handler(commands=['start'])
 def handleStart(message):
