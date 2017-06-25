@@ -81,7 +81,6 @@ def handleAdvertisingMessage(message):
     db.replaceMessage(message.from_user.id,
                       message.text,
                       message.date)
-
     db.read()
 
 
