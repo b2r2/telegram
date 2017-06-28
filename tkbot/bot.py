@@ -23,11 +23,11 @@ console = logging.StreamHandler()
 console.setFormatter(formatter)
 console.setLevel(logging.INFO)
 
-filehandler = logging.FileHandler(settings.logs_path)
+filehandler = logging.FileHandler(settings.logs)
 filehandler.setFormatter(formatter)
 filehandler.setLevel(logging.ERROR)
 
-copy_filehandler = logging.FileHandler(settings.copy_logs_path)
+copy_filehandler = logging.FileHandler(settings.copy_logs)
 copy_filehandler.setFormatter(formatter)
 copy_filehandler.setLevel(logging.ERROR)
 
@@ -82,7 +82,8 @@ def handleAdvertisingMessage(message):
                       message.text,
                       message.date)
 
-    db.read()
+    db.takeUserID(message.from_user.id)
+
 
 @bot.message_handler(commands=['start'])
 def handleStart(message):

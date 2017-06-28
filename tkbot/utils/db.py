@@ -23,11 +23,11 @@ console = logging.StreamHandler()
 console.setFormatter(formatter)
 console.setLevel(logging.INFO)
 
-filehandler = logging.FileHandler(settings.logs_path)
+filehandler = logging.FileHandler(settings.logs)
 filehandler.setFormatter(formatter)
 filehandler.setLevel(logging.ERROR)
 
-copy_filehandler = logging.FileHandler(settings.copy_logs_path)
+copy_filehandler = logging.FileHandler(settings.copy_logs)
 copy_filehandler.setFormatter(formatter)
 copy_filehandler.setLevel(logging.ERROR)
 
@@ -70,15 +70,16 @@ class Database():
         else:
             logInfo(self.__init__.__name__)
 
-    def read(self):
-        sql = "SELECT * FROM ADV_USERS"
+    def takeUserID(self, user_id):
+        sql = "SELECT USR_ID FROM ADV_USERS WHERE USR_ID LIKE {}".format(user_id)
         try:
             self.cursor.execute(sql)
         except sqlite3.DatabaseError as err:
-            logErr(err, self.read.__name__)
+            logErr(err, self.takeUserID.__name__)
         else:
-            logInfo(self.read.__name__)
-            print(self.cursor.fetchall())
+            logInfo(self.takeUserID.__name__)
+            user_id = self.cursor.fetchone()
+            print("This users write: {}".format(user_id))
 
     def replaceMessage(self, user_id, message, date):
         sql = " REPLACE INTO ADV_USERS(USR_ID, MESSAGE, DATE) VALUES(?, ?, ?) "
