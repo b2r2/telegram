@@ -70,16 +70,15 @@ class Database():
         else:
             logInfo(self.__init__.__name__)
 
-    def takeUserID(self, user_id):
-        sql = "SELECT USR_ID FROM ADV_USERS WHERE USR_ID LIKE {}".format(user_id)
+    def returnAdvMessage(self, user_id):
+        sql = "SELECT MESSAGE FROM ADV_USERS WHERE USR_ID LIKE {}".format(user_id)
         try:
             self.cursor.execute(sql)
         except sqlite3.DatabaseError as err:
-            logErr(err, self.takeUserID.__name__)
+            logErr(err, self.returnAdvMessage.__name__)
         else:
-            logInfo(self.takeUserID.__name__)
-            user_id = self.cursor.fetchone()
-            print("This users write: {}".format(user_id))
+            logInfo(self.returnAdvMessage.__name__)
+            return self.cursor.fetchone()[0]
 
     def replaceMessage(self, user_id, message, date):
         sql = " REPLACE INTO ADV_USERS(USR_ID, MESSAGE, DATE) VALUES(?, ?, ?) "

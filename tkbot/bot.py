@@ -82,7 +82,7 @@ def handleAdvertisingMessage(message):
                       message.text,
                       message.date)
 
-    db.takeUserID(message.from_user.id)
+    print(db.returnAdvMessage(message.from_user.id))
 
 
 @bot.message_handler(commands=['start'])
