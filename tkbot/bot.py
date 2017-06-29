@@ -55,7 +55,6 @@ bot = telebot.TeleBot(settings.token)
 chat_id = settings.chat_id
 
 user_will_send_advertising = set()
-emit_advertising_content = {}
 db = utils.db.Database()
 
 
@@ -71,18 +70,17 @@ def handleAdvertising(message):
                      user_will_send_advertising)
 def handleAdvertisingMessage(message):
     user_will_send_advertising.remove(message.from_user.id)
-    emit_advertising_content[message.from_user.id] = message.text
 
     bot.send_message(message.from_user.id, "It is your advertising message:")
-    bot.send_message(message.from_user.id,
-                     emit_advertising_content[message.from_user.id])
-    bot.send_message(message.from_user.id, "If wrong try again.")
 
     db.replaceMessage(message.from_user.id,
                       message.text,
                       message.date)
 
-    print(db.returnAdvMessage(message.from_user.id))
+    bot.send_message(message.from_user.id,
+                     db.returnAdvMessage(message.from_user.id))
+
+    bot.send_message(message.from_user.id, "If wrong try again.")
 
 
 @bot.message_handler(commands=['start'])
