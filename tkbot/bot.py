@@ -55,50 +55,103 @@ bot = telebot.TeleBot(settings.token)
 chat_id = settings.chat_id
 
 user_will_send_advertising = set()
+user_will_send_channel = set()
+user_will_send_schedule = set()
 db = utils.db.Database()
+print(db.viewTable())
 
 
-@bot.message_handler(commands=['advertising'])
+@bot.message_handler(commands=['advertising', 'channel', 'schedule'])
 def handleAdvertising(message):
-    user_will_send_advertising.add(message.from_user.id)
-    help_msg = """Give me your advertising message (e.g. @name_channel)
-    \nPlease write an advertising post:"""
-    bot.send_message(message.from_user.id, help_msg)
+    if message.text == '/advertising':
+        user_will_send_advertising.add(message.from_user.id)
+        msg = "Give me your advertising message:"
+        bot.send_message(message.from_user.id, msg)
+    elif message.text == '/channel':
+        user_will_send_channel.add(message.from_user.id)
+        msg = "Please enter the name of the channel (e.g. @yourchannel)"
+        bot.send_message(message.from_user.id, msg)
+    else:
+        user_will_send_schedule.add(message.from_user.id)
+        msg = "Here you can set up a schedule to release your" + \
+              " advertising message in the system.\n" + \
+              "Please enter only the hours without minutes" + \
+              " (e.g. 1, 12, 13, 23, etc.):"
+        bot.send_message(message.from_user.id, msg)
+
+
+@bot.message_handler(func=lambda message: message.from_user.id in
+                     user_will_send_channel)
+def handleChannel(message):
+    user_will_send_channel.remove(message.from_user.id)
+    bot.send_message(message.from_user.id, "It is your channel:")
+
+    db.updateChannelUser(message.from_user.id,
+                         message.text,
+                         message.date)
+
+    bot.send_message(message.from_user.id,
+                     db.returnChannelUser(message.from_user.id))
+    bot.send_message(message.from_user.id, "If you see the error,"
+                     " try again!")
+    print(db.viewTable())
+
+
+@bot.message_handler(func=lambda message: message.from_user.id in
+                     user_will_send_schedule)
+def handleSchedule(message):
+    user_will_send_schedule.remove(message.from_user.id)
+    bot.send_message(message.from_user.id, "It's your schedule:")
+
+    db.updateScheduleUser(message.from_user.id,
+                          message.text,
+                          message.date)
+
+    bot.send_message(message.from_user.id,
+                     db.returnScheduleUser(message.from_user.id))
+
+    bot.send_message(message.from_user.id, "If you see the error,"
+                     " try again!")
+    print(db.viewTable())
 
 
 @bot.message_handler(func=lambda message: message.from_user.id in
                      user_will_send_advertising)
 def handleAdvertisingMessage(message):
+    # no photo!
     user_will_send_advertising.remove(message.from_user.id)
 
     bot.send_message(message.from_user.id, "It is your advertising message:")
 
-    db.replaceMessage(message.from_user.id,
-                      message.text,
-                      message.date)
+    db.updateAdvMessageUser(message.from_user.id,
+                            message.text,
+                            message.date)
 
     bot.send_message(message.from_user.id,
-                     db.returnAdvMessage(message.from_user.id))
+                     db.returnAdvMessageUser(message.from_user.id))
 
-    bot.send_message(message.from_user.id, "If wrong try again.")
+    bot.send_message(message.from_user.id, "If you see the erorr,"
+                     " try again!")
+    print(db.viewTable())
 
 
 @bot.message_handler(commands=['start'])
 def handleStart(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
     user_markup.row('/start', '/help')
+    user_markup.row('/channel', '/schedule')
     user_markup.row('/advertising')
 
-    help_msg = """Hello!
+    msg = """Hello!
     \nYou can send message in channel {0}""".format(chat_id)
-    bot.send_message(message.from_user.id, help_msg,
+    bot.send_message(message.from_user.id, msg,
                      reply_markup=user_markup)
 
 
 @bot.message_handler(commands=['help'])
 def handleHelp(message):
-    help_msg = """My options are very limited..."""
-    bot.send_message(message.from_user.id, help_msg)
+    msg = """My options are very limited..."""
+    bot.send_message(message.from_user.id, msg)
 
 
 @bot.message_handler(content_types=['photo'])
