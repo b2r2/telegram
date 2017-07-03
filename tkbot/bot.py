@@ -120,7 +120,6 @@ def handleSchedule(message):
 def handleAdvertisingMessage(message):
     # no photo!
     user_will_send_advertising.remove(message.from_user.id)
-
     bot.send_message(message.from_user.id, "It is your advertising message:")
 
     db.updateAdvMessageUser(message.from_user.id,
@@ -140,7 +139,7 @@ def handleStart(message):
     user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
     user_markup.row('/start', '/help')
     user_markup.row('/channel', '/schedule')
-    user_markup.row('/advertising')
+    user_markup.row('/advertising', '/mydata')
 
     msg = """Hello!
     \nYou can send message in channel {0}""".format(chat_id)
@@ -152,6 +151,17 @@ def handleStart(message):
 def handleHelp(message):
     msg = """My options are very limited..."""
     bot.send_message(message.from_user.id, msg)
+
+
+@bot.message_handler(commands=['mydata'])
+def handleMyData(message):
+    msg = "Your data is in the format (user ID, channel name,"\
+        "advertising message, schedule)"
+    bot.send_message(message.from_user.id, msg)
+    data = db.returnAllDataUser(message.from_user.id)
+
+    for user_data in data[0][1:-1]:
+        bot.send_message(message.from_user.id, user_data)
 
 
 @bot.message_handler(content_types=['photo'])

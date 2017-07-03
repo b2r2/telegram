@@ -107,6 +107,18 @@ class Database():
         else:
             logInfo(self.returnScheduleUser.__name__)
             return self.cursor.fetchall()
+
+    def returnAllDataUser(self, user_id):
+        """ Return all the data about the user """
+        sql = "SELECT * FROM ADV_USERS WHERE USER_ID LIKE {}".format(user_id)
+        try:
+            self.cursor.execute(sql)
+            self.connection.commit()
+        except sqlite3.DatabaseError as err:
+            logErr(err, self.returnAllDataUser.__name__)
+        else:
+            logInfo(self.returnAllDataUser.__name__)
+            return self.cursor.fetchall()
 # DEBUG#######################################
 
     def viewTable(self):
@@ -119,7 +131,7 @@ class Database():
         """ Update advertising message """
         returnSelectUserId = self.returnSelectUserId()
         if returnSelectUserId and user_id in returnSelectUserId:
-            sql = "UPDATE ADV_USERS SET MESSAGE=(?), DATE=(?)"
+            sql = "UPDATE OR REPLACE ADV_USERS SET MESSAGE=(?), DATE=(?)"
             try:
                 self.cursor.execute(sql, (message, date,))
                 self.connection.commit()
@@ -132,7 +144,7 @@ class Database():
 
     def addAdvMessageUser(self, user_id, message, date):
         """ Insert or replace advertising message """
-        sql = "INSERT OR REPLACE INTO ADV_USERS(USER_ID, MESSAGE, DATE) VALUES(?, ?, ?)"
+        sql = "REPLACE INTO ADV_USERS(USER_ID, MESSAGE, DATE) VALUES(?, ?, ?)"
         params = (user_id, message, date)
 
         try:
@@ -160,7 +172,7 @@ class Database():
 
     def addChannelUser(self, user_id, channel, date):
         """ Insert or replace channel name """
-        sql = "INSERT OR REPLACE INTO ADV_USERS(USER_ID, CHANNEL, DATE) VALUES(?, ?, ?)"
+        sql = "REPLACE INTO ADV_USERS(USER_ID, CHANNEL, DATE) VALUES(?, ?, ?)"
         params = (user_id, channel, date,)
         try:
             self.cursor.execute(sql, params)
@@ -174,7 +186,7 @@ class Database():
         """ Update schedule """
         returnSelectUserId = self.returnSelectUserId()
         if returnSelectUserId and user_id in returnSelectUserId:
-            sql = "UPDATE ADV_USERS SET SCHEDULE=(?), DATE=(?)"
+            sql = "UPDATE ADV_USERS SET SCHEDULE=(?), DATE=(?) WHERE {}".format(user_id)
             try:
                 self.cursor.execute(sql, (sched, date,))
                 self.connection.commit()
@@ -187,7 +199,7 @@ class Database():
 
     def addScheduleUser(self, user_id, sched, date):
         """ Insert or replace schedule """
-        sql = "INSERT OR REPLACE INTO ADV_USERS(USER_ID, SCHEDULE, DATE) VALUES(?, ?, ?)"
+        sql = "REPLACE INTO ADV_USERS(USER_ID, SCHEDULE, DATE) VALUES(?, ?, ?)"
         params = (user_id, sched, date)
         try:
             self.cursor.execute(sql, params)
