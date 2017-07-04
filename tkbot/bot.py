@@ -57,20 +57,56 @@ chat_id = settings.chat_id
 user_will_send_advertising = set()
 user_will_send_channel = set()
 user_will_send_schedule = set()
+
 db = utils.db.Database()
+
 print(db.viewTable())
 
 
-@bot.message_handler(commands=['advertising', 'channel', 'schedule'])
+#########################################
+# COMMANDS ##############################
+#########################################
+
+@bot.message_handler(commands=['start'])
+def handleStart(message):
+    user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
+    user_markup.row('/start', '/help')
+    user_markup.row('/channel', '/schedule')
+    user_markup.row('/advertising', '/mydata')
+
+    msg = """Hello!
+    \nYou can send message in channel {0}""".format(chat_id)
+    bot.send_message(message.from_user.id, msg,
+                     reply_markup=user_markup)
+
+
+@bot.message_handler(commands=['help'])
+def handleHelp(message):
+    msg = """My options are very limited..."""
+    bot.send_message(message.from_user.id, msg)
+
+
+@bot.message_handler(commands=['advertising', 'channel', 'schedule', 'mydata'])
 def handleAdvertising(message):
     if message.text == '/advertising':
         user_will_send_advertising.add(message.from_user.id)
         msg = "Give me your advertising message:"
         bot.send_message(message.from_user.id, msg)
+
     elif message.text == '/channel':
         user_will_send_channel.add(message.from_user.id)
         msg = "Please enter the name of the channel (e.g. @yourchannel)"
         bot.send_message(message.from_user.id, msg)
+
+    elif message.text == '/mydata':
+        msg = "Your data is in the format (user ID, channel name,"\
+            "advertising message, schedule)"
+        bot.send_message(message.from_user.id, msg)
+        data = db.returnAllDataUser(message.from_user.id)
+
+        for user_data in data[0][1:-1]:
+            bot.send_message(message.from_user.id, user_data)
+
     else:
         user_will_send_schedule.add(message.from_user.id)
         msg = "Here you can set up a schedule to release your" + \
@@ -78,6 +114,28 @@ def handleAdvertising(message):
               "Please enter only the hours without minutes" + \
               " (e.g. 1, 12, 13, 23, etc.):"
         bot.send_message(message.from_user.id, msg)
+
+
+#########################################
+# DATABASE METHODS ######################
+#########################################
+@bot.message_handler(func=lambda message: message.from_user.id in
+                     user_will_send_advertising)
+def handleAdvertisingMessage(message):
+    # no photo!
+    user_will_send_advertising.remove(message.from_user.id)
+    bot.send_message(message.from_user.id, "It is your advertising message:")
+
+    db.updateAdvMessageUser(message.from_user.id,
+                            message.text,
+                            message.date)
+
+    bot.send_message(message.from_user.id,
+                     db.returnAdvMessageUser(message.from_user.id))
+
+    bot.send_message(message.from_user.id, "If you see the erorr,"
+                     " try again!")
+    print(db.viewTable())
 
 
 @bot.message_handler(func=lambda message: message.from_user.id in
@@ -115,54 +173,7 @@ def handleSchedule(message):
     print(db.viewTable())
 
 
-@bot.message_handler(func=lambda message: message.from_user.id in
-                     user_will_send_advertising)
-def handleAdvertisingMessage(message):
-    # no photo!
-    user_will_send_advertising.remove(message.from_user.id)
-    bot.send_message(message.from_user.id, "It is your advertising message:")
-
-    db.updateAdvMessageUser(message.from_user.id,
-                            message.text,
-                            message.date)
-
-    bot.send_message(message.from_user.id,
-                     db.returnAdvMessageUser(message.from_user.id))
-
-    bot.send_message(message.from_user.id, "If you see the erorr,"
-                     " try again!")
-    print(db.viewTable())
-
-
-@bot.message_handler(commands=['start'])
-def handleStart(message):
-    user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
-    user_markup.row('/start', '/help')
-    user_markup.row('/channel', '/schedule')
-    user_markup.row('/advertising', '/mydata')
-
-    msg = """Hello!
-    \nYou can send message in channel {0}""".format(chat_id)
-    bot.send_message(message.from_user.id, msg,
-                     reply_markup=user_markup)
-
-
-@bot.message_handler(commands=['help'])
-def handleHelp(message):
-    msg = """My options are very limited..."""
-    bot.send_message(message.from_user.id, msg)
-
-
-@bot.message_handler(commands=['mydata'])
-def handleMyData(message):
-    msg = "Your data is in the format (user ID, channel name,"\
-        "advertising message, schedule)"
-    bot.send_message(message.from_user.id, msg)
-    data = db.returnAllDataUser(message.from_user.id)
-
-    for user_data in data[0][1:-1]:
-        bot.send_message(message.from_user.id, user_data)
-
+#########################################
 
 @bot.message_handler(content_types=['photo'])
 def handlePhoto(message):
