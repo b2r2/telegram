@@ -98,22 +98,22 @@ def handleAdvertising(message):
         msg = "Please enter the name of the channel (e.g. @yourchannel)"
         bot.send_message(message.from_user.id, msg)
 
-    elif message.text == '/mydata':
+    elif message.text == '/schedule':
+        user_will_send_schedule.add(message.from_user.id)
+        msg = "Here you can set up a schedule to release your" + \
+              " advertising message in the system.\n" + \
+              "Please enter only the hours without minutes" + \
+              " (e.g. 01:00, 23:15, etc.):"
+        bot.send_message(message.from_user.id, msg)
+
+    else:
         msg = "Your data is in the format (user ID, channel name,"\
               "advertising message, schedule)"
         bot.send_message(message.from_user.id, msg)
         data = db.returnAllDataUser(message.from_user.id)
 
         for user_data in data[0][1:-1]:
-           bot.send_message(message.from_user.id, user_data)
-
-    else:
-        user_will_send_schedule.add(message.from_user.id)
-        msg = "Here you can set up a schedule to release your" + \
-              " advertising message in the system.\n" + \
-              "Please enter only the hours without minutes" + \
-              " (e.g. 1, 12, 13, 23, etc.):"
-        bot.send_message(message.from_user.id, msg)
+            bot.send_message(message.from_user.id, user_data)
 
 
 #########################################
