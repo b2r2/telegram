@@ -82,16 +82,20 @@ class Database():
 ###############################################
 # INSERT OR UPDATE METHODS ####################
 ###############################################
-
-    def handleAdvMessageUser(self, user_id, message, date):
-        """ Insert or Update advertising message """
-# КОД НИЖЕ НЕ РАБОТАЕТ, ЕСЛИ БАЗА, КАК МИНИМУМ ЧИСТАЯ!
+    def insertDb(self, user_id):
+        """ Insert database """
         sql = "INSERT OR IGNORE INTO ADV_USERS(USER_ID) VALUES(?)"
         try:
             self.cursor.execute(sql, (user_id,))
             self.connection.commit()
+        except sqlite3.DatabaseError as err:
+            logErr(err, self.insertDb.__name__)
 
-            sql = "UPDATE ADV_USERS SET MESSAGE=?, DATE=? WHERE USER_ID=?"
+    def handleAdvMessageUser(self, user_id, message, date):
+        """ Insert or Update advertising message """
+        self.insertDb(user_id)
+        sql = "UPDATE ADV_USERS SET MESSAGE=?, DATE=? WHERE USER_ID=?"
+        try:
             self.cursor.execute(sql, (message, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
@@ -101,12 +105,9 @@ class Database():
 
     def handleChannelUser(self, user_id, channel, date):
         """ Insert or Update channel name """
-        sql = "INSERT OR IGNORE INTO ADV_USERS(USER_ID) VALUES(?)"
+        self.insertDb(user_id)
+        sql = "UPDATE ADV_USERS SET CHANNEL=?, DATE=? WHERE USER_ID=?"
         try:
-            self.cursor.execute(sql, (user_id,))
-            self.connection.commit()
-
-            sql = "UPDATE ADV_USERS SET CHANNEL=?, DATE=? WHERE USER_ID=?"
             self.cursor.execute(sql, (channel, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
@@ -116,12 +117,9 @@ class Database():
 
     def handleScheduleUser(self, user_id, sched, date):
         """ Insert or Update schedule """
-        sql = "INSERT OR IGNORE INTO ADV_USERS(USER_ID) VALUES(?)"
+        self.insertDb(user_id)
+        sql = "UPDATE ADV_USERS SET SCHEDULE=?, DATE=? WHERE USER_ID=?"
         try:
-            self.cursor.execute(sql, (user_id,))
-            self.connection.commit()
-
-            sql = "UPDATE ADV_USERS SET SCHEDULE=?, DATE=? WHERE USER_ID=?"
             self.cursor.execute(sql, (sched, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
