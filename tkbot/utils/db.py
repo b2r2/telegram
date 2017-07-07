@@ -80,118 +80,58 @@ class Database():
         return self.cursor.fetchall()
 
 ###############################################
-# UPDATE METHODS ##############################
+# INSERT OR UPDATE METHODS ####################
 ###############################################
 
-    def updateAdvMessageUser(self, user_id, message, date):
-        """ Update advertising message """
-        users = self.returnSelectUserId()
-        if users and ((user_id,) in users):
-            sql = "UPDATE ADV_USERS SET MESSAGE= ?, DATE= ? WHERE\
-                USER_ID= ?"
-            try:
-                self.cursor.execute(sql, (message, date, user_id,))
-                self.connection.commit()
-            except sqlite3.DatabaseError as err:
-                logErr(err, self.updateAdvMessageUser.__name__)
-            else:
-                logInfo(self.updateAdvMessageUser.__name__)
-        else:
-            self.addAdvMessageUser(user_id, message, date)
-
-    def updateChannelUser(self, user_id, channel, date):
-        """ Update channel name """
-        users = self.returnSelectUserId()
-        if users and ((user_id,) in users):
-            sql = "UPDATE ADV_USERS SET CHANNEL= ?, DATE= ? WHERE\
-                USER_ID= ?"
-            try:
-                self.cursor.execute(sql, (channel, date, user_id,))
-                self.connection.commit()
-            except sqlite3.DatabaseError as err:
-                logErr(err, self.updateChannelUser.__name__)
-            else:
-                logInfo(self.updateChannelUser.__name__)
-        else:
-            self.addChannelUser(user_id, channel, date)
-
-    def updateScheduleUser(self, user_id, sched, date):
-        """ Update schedule """
-        users = self.returnSelectUserId()
-        if users and ((user_id,) in users):
-            sql = "UPDATE ADV_USERS SET SCHEDULE= ?, DATE= ? WHERE\
-                USER_ID= ?"
-            try:
-                self.cursor.execute(sql, (sched, date, user_id,))
-                self.connection.commit()
-            except sqlite3.DatabaseError as err:
-                logErr(err, self.updateScheduleUser.__name__)
-            else:
-                logInfo(self.updateScheduleUser.__name__)
-        else:
-            self.addScheduleUser(user_id, sched, date)
-
-###############################################
-# ADD METHODS #################################
-###############################################
-
-    def addAdvMessageUser(self, user_id, message, date):
-        """ Insert or replace advertising message """
-        sql = "REPLACE INTO ADV_USERS(USER_ID, MESSAGE, DATE)\
-            VALUES(?, ?, ?)"
-        params = (user_id, message, date)
-
+    def handleAdvMessageUser(self, user_id, message, date):
+        """ Insert or Update advertising message """
+# КОД НИЖЕ НЕ РАБОТАЕТ, ЕСЛИ БАЗА, КАК МИНИМУМ ЧИСТАЯ!
+        sql = "INSERT OR IGNORE INTO ADV_USERS(USER_ID) VALUES(?)"
         try:
-            self.cursor.execute(sql, params)
+            self.cursor.execute(sql, (user_id,))
+            self.connection.commit()
+
+            sql = "UPDATE ADV_USERS SET MESSAGE=?, DATE=? WHERE USER_ID=?"
+            self.cursor.execute(sql, (message, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            logErr(err, self.addAdvMessageUser.__name__)
+            logErr(err, self.handleAdvMessageUser.__name__)
         else:
-            logInfo(self.addAdvMessageUser.__name__)
+            logInfo(self.handleAdvMessageUser.__name__)
 
-    def addChannelUser(self, user_id, channel, date):
-        """ Insert or replace channel name """
-        sql = "REPLACE INTO ADV_USERS(USER_ID, CHANNEL, DATE)\
-            VALUES(?, ?, ?)"
-        params = (user_id, channel, date,)
+    def handleChannelUser(self, user_id, channel, date):
+        """ Insert or Update channel name """
+        sql = "INSERT OR IGNORE INTO ADV_USERS(USER_ID) VALUES(?)"
         try:
-            self.cursor.execute(sql, params)
+            self.cursor.execute(sql, (user_id,))
+            self.connection.commit()
+
+            sql = "UPDATE ADV_USERS SET CHANNEL=?, DATE=? WHERE USER_ID=?"
+            self.cursor.execute(sql, (channel, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            logErr(err, self.addChannelUser.__name__)
+            logErr(err, self.handleChannelUser.__name__)
         else:
-            logInfo(self.addChannelUser.__name__)
+            logInfo(self.handleChannelUser.__name__)
 
-    def addScheduleUser(self, user_id, sched, date):
-        """ Insert or replace schedule """
-        sql = "REPLACE INTO ADV_USERS(USER_ID, SCHEDULE, DATE)\
-            VALUES(?, ?, ?)"
-        params = (user_id, sched, date)
+    def handleScheduleUser(self, user_id, sched, date):
+        """ Insert or Update schedule """
+        sql = "INSERT OR IGNORE INTO ADV_USERS(USER_ID) VALUES(?)"
         try:
-            self.cursor.execute(sql, params)
+            self.cursor.execute(sql, (user_id,))
+            self.connection.commit()
+
+            sql = "UPDATE ADV_USERS SET SCHEDULE=?, DATE=? WHERE USER_ID=?"
+            self.cursor.execute(sql, (sched, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            logErr(err, self.addScheduleUser.__name__)
+            logErr(err, self.handleScheduleUser.__name__)
         else:
-            logInfo(self.addScheduleUser.__name__)
+            logInfo(self.handleScheduleUser.__name__)
 
 ###############################################
 # RETURN METHODS ##############################
 ###############################################
-
-    def returnSelectUserId(self):
-        sql = "SELECT USER_ID FROM ADV_USERS"
-        try:
-            self.cursor.execute(sql)
-            self.connection.commit()
-        except sqlite3.DatabaseError as err:
-            logErr(err, self.returnSelectUserId.__name__)
-        else:
-            logInfo(self.returnSelectUserId.__name__)
-            print("RETURN SELECT USER ID - ", self.cursor.fetchall())
-            return self.cursor.fetchall()
-
-################################################
 
     def returnAdvMessageUser(self, user_id):
         """ Return advertising message """

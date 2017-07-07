@@ -100,12 +100,12 @@ def handleAdvertising(message):
 
     elif message.text == '/mydata':
         msg = "Your data is in the format (user ID, channel name,"\
-            "advertising message, schedule)"
+              "advertising message, schedule)"
         bot.send_message(message.from_user.id, msg)
         data = db.returnAllDataUser(message.from_user.id)
 
         for user_data in data[0][1:-1]:
-            bot.send_message(message.from_user.id, user_data)
+           bot.send_message(message.from_user.id, user_data)
 
     else:
         user_will_send_schedule.add(message.from_user.id)
@@ -126,7 +126,7 @@ def handleAdvertisingMessage(message):
     user_will_send_advertising.remove(message.from_user.id)
     bot.send_message(message.from_user.id, "It is your advertising message:")
 
-    db.updateAdvMessageUser(message.from_user.id,
+    db.handleAdvMessageUser(message.from_user.id,
                             message.text,
                             message.date)
 
@@ -144,7 +144,7 @@ def handleChannel(message):
     user_will_send_channel.remove(message.from_user.id)
     bot.send_message(message.from_user.id, "It is your channel:")
 
-    db.updateChannelUser(message.from_user.id,
+    db.handleChannelUser(message.from_user.id,
                          message.text,
                          message.date)
 
@@ -161,7 +161,7 @@ def handleSchedule(message):
     user_will_send_schedule.remove(message.from_user.id)
     bot.send_message(message.from_user.id, "It's your schedule:")
 
-    db.updateScheduleUser(message.from_user.id,
+    db.handleScheduleUser(message.from_user.id,
                           message.text,
                           message.date)
 
