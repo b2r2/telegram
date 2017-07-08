@@ -1,9 +1,10 @@
 __pycache__
 settings.py
+path.py
 *.swo
 *.swp
 *.swn
 *.txt
 *.db
-test/
+tests/
 log/
