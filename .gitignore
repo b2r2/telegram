@@ -6,5 +6,6 @@ path.py
 *.swn
 *.txt
 *.db
+*.pem
 tests/
 log/
