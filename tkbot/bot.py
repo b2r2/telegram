@@ -2,57 +2,19 @@
 
 import telebot
 import settings
-import path
-import logging
 import utils.handler
 import utils.db
 
 
-class Log():
-    def __init__(self):
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-
-        formatter = logging.Formatter(fmt='%(levelname)s:%(name)s# %(message)s'
-                                      '# (%(asctime)s)',
-                                      datefmt='%Y-%m-%d %H:%M:%S')
-
-        console = logging.StreamHandler()
-        console.setFormatter(formatter)
-        console.setLevel(logging.INFO)
-
-        filehandler = logging.FileHandler(path.log)
-        filehandler.setFormatter(formatter)
-        filehandler.setLevel(logging.ERROR)
-
-        copy_filehandler = logging.FileHandler(path.copy_log)
-        copy_filehandler.setFormatter(formatter)
-        copy_filehandler.setLevel(logging.ERROR)
-
-        self.logger.addHandler(console)
-        self.logger.addHandler(filehandler)
-        self.logger.addHandler(copy_filehandler)
-
-    def error(self, function_name, msg):
-        self.logger.exception('Error:  %s. Sending a file(type %s)',
-                              function_name, msg)
-
-    def info(self, function_name):
-        self.logger.info('%s: success', function_name)
-
-##########################################################################
-
-log = Log()
 bot = telebot.TeleBot(settings.token)
 
 chat_id = settings.chat_id
-db = utils.db.Database()
 
 user_will_send_advertising = set()
 user_will_send_channel = set()
 user_will_send_schedule = set()
 
-
+db = utils.db.Database()
 handler = utils.handler.Handler(bot, chat_id, db)
 
 
@@ -72,19 +34,22 @@ def handle_Data(message):
     handler.handle_Data(message)
 
 
-@bot.message_handler(commands=['advertising', 'channel', 'schedule'])
+@bot.message_handler(commands=['advertising'])
 def handle_Advertising(message):
-    if message.text == '/advertising':
-        user_will_send_advertising.add(message.from_user.id)
-        handler.handle_Advertising(message)
+    user_will_send_advertising.add(message.from_user.id)
+    handler.handle_Advertising(message)
 
-    elif message.text == '/channel':
-        user_will_send_channel.add(message.from_user.id)
-        handler.handle_Channel(message)
 
-    elif message.text == '/schedule':
-        user_will_send_schedule.add(message.from_user.id)
-        handler.handle_Schedule(message)
+@bot.message_handler(commands=['channel'])
+def handle_Channel(message):
+    user_will_send_channel.add(message.from_user.id)
+    handler.handle_Channel(message)
+
+
+@bot.message_handler(commands=['schedule'])
+def handle_Schedule(message):
+    user_will_send_schedule.add(message.from_user.id)
+    handler.handle_Schedule(message)
 
 
 @bot.message_handler(func=lambda message: message.from_user.id in
