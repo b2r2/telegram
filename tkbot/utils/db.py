@@ -88,7 +88,7 @@ class Database():
             log.info(self.insert_Into_Database.__name__)
 ###############################################
 
-    def handler_Adv_Message_User(self, user_id, message, date):
+    def update_Adv_Message_User(self, user_id, message, date):
         """ Insert or Update advertising message """
         self.insert_Into_Database(user_id)
         sql = "UPDATE ADV_USERS SET MESSAGE=?, DATE=? WHERE USER_ID=?"
@@ -96,11 +96,11 @@ class Database():
             self.cursor.execute(sql, (message, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.handler_Adv_Message_User.__name__)
+            log.error(err, self.update_Adv_Message_User.__name__)
         else:
-            log.info(self.handler_Adv_Message_User.__name__)
+            log.info(self.update_Adv_Message_User.__name__)
 
-    def handler_Channel_User(self, user_id, channel, date):
+    def update_Channel_User(self, user_id, channel, date):
         """ Insert or Update channel name """
         self.insert_Into_Database(user_id)
         sql = "UPDATE ADV_USERS SET CHANNEL=?, DATE=? WHERE USER_ID=?"
@@ -108,11 +108,11 @@ class Database():
             self.cursor.execute(sql, (channel, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.handler_Channel_User.__name__)
+            log.error(err, self.update_Channel_User.__name__)
         else:
-            log.info(self.handler_Channel_User.__name__)
+            log.info(self.update_Channel_User.__name__)
 
-    def handle_Schedule_User(self, user_id, sched, date):
+    def update_Schedule_User(self, user_id, sched, date):
         """ Insert or Update schedule """
         self.insert_Into_Database(user_id)
         sql = "UPDATE ADV_USERS SET SCHEDULE=?, DATE=? WHERE USER_ID=?"
@@ -120,9 +120,9 @@ class Database():
             self.cursor.execute(sql, (sched, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.handle_Schedule_User.__name__)
+            log.error(err, self.update_Schedule_User.__name__)
         else:
-            log.info(self.handle_Schedule_User.__name__)
+            log.info(self.update_Schedule_User.__name__)
 
 ###############################################
 # RETURN METHODS ##############################

@@ -90,9 +90,9 @@ class Handler():
         # no photo!
         self.bot.send_message(message.from_user.id, "It is your advertising message:")
 
-        self.db.handler_Adv_Message_User(message.from_user.id,
-                                         message.text,
-                                         message.date)
+        self.db.update_Adv_Message_User(message.from_user.id,
+                                        message.text,
+                                        message.date)
 
         self.bot.send_message(message.from_user.id,
                               self.db.return_Adv_Message_User(message.from_user.id))
@@ -104,9 +104,9 @@ class Handler():
     def handle_Channel_Message(self, message):
         self.bot.send_message(message.from_user.id, "It is your channel:")
 
-        self.db.handler_Channel_User(message.from_user.id,
-                                     message.text,
-                                     message.date)
+        self.db.update_Channel_User(message.from_user.id,
+                                    message.text,
+                                    message.date)
 
         self.bot.send_message(message.from_user.id,
                               self.db.return_Channel_User(message.from_user.id))
@@ -117,7 +117,7 @@ class Handler():
     def handle_Schedule_Message(self, message):
         self.bot.send_message(message.from_user.id, "It's your schedule:")
 
-        self.db.handle_Schedule_User(message.from_user.id,
+        self.db.update_Schedule_User(message.from_user.id,
                                      message.text,
                                      message.date)
 
