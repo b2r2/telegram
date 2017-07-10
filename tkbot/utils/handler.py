@@ -1,14 +1,9 @@
 import logging
 import telebot
-import sys
-
-sys.path.append('/home/my_project/telegram/tkbot/')
-
-import path
 
 
 class Log():
-    def __init__(self):
+    def __init__(self, path_log, path_copy_log):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
@@ -20,11 +15,11 @@ class Log():
         console.setFormatter(formatter)
         console.setLevel(logging.INFO)
 
-        filehandler = logging.FileHandler(path.log)
+        filehandler = logging.FileHandler(path_log)
         filehandler.setFormatter(formatter)
         filehandler.setLevel(logging.ERROR)
 
-        copy_filehandler = logging.FileHandler(path.copy_log)
+        copy_filehandler = logging.FileHandler(path_copy_log)
         copy_filehandler.setFormatter(formatter)
         copy_filehandler.setLevel(logging.ERROR)
 
@@ -41,7 +36,8 @@ class Log():
 
 
 class Handler():
-    def __init__(self, bot, chat_id, database):
+    def __init__(self, bot, chat_id, database, path_log, path_copy_log):
+        self.log = Log(path_log, path_copy_log)
         self.chat_id = chat_id
         self.bot = bot
         self.db = database
@@ -132,53 +128,50 @@ class Handler():
             msg_photo = message.photo[0].file_id
             self.bot.send_photo(self.chat_id, msg_photo)
         except Exception as err:
-            log.error(err, self.handle_Photo.__name__)
+            self.log.error(err, self.handle_Photo.__name__)
         else:
-            log.info(self.handle_Photo.__name__)
+            self.log.info(self.handle_Photo.__name__)
 
     def handle_Sticker(self, message):
         try:
             msg_sticker = message.sticker.file_id
             self.bot.send_sticker(self.chat_id, msg_sticker)
         except Exception as err:
-            log.error(err, self.handle_Sticker.__name__)
+            self.log.error(err, self.handle_Sticker.__name__)
         else:
-            log.info(self.handle_Sticker.__name__)
+            self.log.info(self.handle_Sticker.__name__)
 
     def handle_Audio(self, message):
         try:
             msg_audio = message.audio.file_id
             self.bot.send_audio(self.chat_id, msg_audio)
         except Exception as err:
-            log.error(err, self.handle_Audio.__name__)
+            self.log.error(err, self.handle_Audio.__name__)
         else:
-            log.info(self.handle_Audio.__name__)
+            self.log.info(self.handle_Audio.__name__)
 
     def handle_Document(self, message):
         try:
             msg_document = message.document.file_id
             self.bot.send_document(self.chat_id, msg_document)
         except Exception as err:
-            log.error(err, self.handle_Document.__name__)
+            self.log.error(err, self.handle_Document.__name__)
         else:
-            log.info(self.handle_Document.__name__)
+            self.log.info(self.handle_Document.__name__)
 
     def handle_Video(self, message):
         try:
             msg_video = message.video.file_id
             self.bot.send_video(self.chat_id, msg_video)
         except Exception as err:
-            log.error(err, self.handle_Video.__name__)
+            self.log.error(err, self.handle_Video.__name__)
         else:
-            log.info(self.handle_Video.__name__)
+            self.log.info(self.handle_Video.__name__)
 
     def handle_Text(self, message):
         try:
             self.bot.send_message(self.chat_id, message.text)
         except Exception as err:
-            log.error(err, self.handle_Text)
+            self.log.error(err, self.handle_Text)
         else:
-            log.info(self.handle_Text.__name__)
-
-
-log = Log()
+            self.log.info(self.handle_Text.__name__)

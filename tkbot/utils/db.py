@@ -1,15 +1,9 @@
 import sqlite3
 import logging
-import sys
-
-
-sys.path.append('../')
-
-import path
 
 
 class Log():
-    def __init__(self):
+    def __init__(self, path_log, path_copy_log):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
@@ -21,11 +15,11 @@ class Log():
         console.setFormatter(formatter)
         console.setLevel(logging.INFO)
 
-        filehandler = logging.FileHandler(path.log)
+        filehandler = logging.FileHandler(path_log)
         filehandler.setFormatter(formatter)
         filehandler.setLevel(logging.ERROR)
 
-        copy_filehandler = logging.FileHandler(path.copy_log)
+        copy_filehandler = logging.FileHandler(path_copy_log)
         copy_filehandler.setFormatter(formatter)
         copy_filehandler.setLevel(logging.ERROR)
 
@@ -42,8 +36,10 @@ class Log():
 
 
 class Database():
-    def __init__(self):
-        self.connection = sqlite3.connect(path.db,
+    def __init__(self, path_db, path_log, path_copy_log):
+        self.log = Log(path_log, path_copy_log)
+
+        self.connection = sqlite3.connect(path_db,
                                           check_same_thread=False)
         self.cursor = self.connection.cursor()
         sql = """ CREATE TABLE IF NOT EXISTS ADV_USERS
@@ -57,9 +53,9 @@ class Database():
             self.cursor.execute(sql)
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.__init__.__name__)
+            self.log.error(err, self.__init__.__name__)
         else:
-            log.info(self.__init__.__name__)
+            self.log.info(self.__init__.__name__)
 
 # DEBUG#######################################
 
@@ -68,9 +64,9 @@ class Database():
         try:
             self.cursor.execute(sql)
         except sqlite3.DatabaseError as err:
-            log.error(err, self.show_Database.__name__)
+            self.log.error(err, self.show_Database.__name__)
         else:
-            log.info(self.show_Database.__name__)
+            self.log.info(self.show_Database.__name__)
             return self.cursor.fetchall()
 
 ###############################################
@@ -83,9 +79,9 @@ class Database():
             self.cursor.execute(sql, (user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.insert_Into_Database.__name__)
+            self.log.error(err, self.insert_Into_Database.__name__)
         else:
-            log.info(self.insert_Into_Database.__name__)
+            self.log.info(self.insert_Into_Database.__name__)
 ###############################################
 
     def update_Adv_Message_User(self, user_id, message, date):
@@ -96,9 +92,9 @@ class Database():
             self.cursor.execute(sql, (message, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.update_Adv_Message_User.__name__)
+            self.log.error(err, self.update_Adv_Message_User.__name__)
         else:
-            log.info(self.update_Adv_Message_User.__name__)
+            self.log.info(self.update_Adv_Message_User.__name__)
 
     def update_Channel_User(self, user_id, channel, date):
         """ Insert or Update channel name """
@@ -108,9 +104,9 @@ class Database():
             self.cursor.execute(sql, (channel, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.update_Channel_User.__name__)
+            self.log.error(err, self.update_Channel_User.__name__)
         else:
-            log.info(self.update_Channel_User.__name__)
+            self.log.info(self.update_Channel_User.__name__)
 
     def update_Schedule_User(self, user_id, sched, date):
         """ Insert or Update schedule """
@@ -120,9 +116,9 @@ class Database():
             self.cursor.execute(sql, (sched, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.update_Schedule_User.__name__)
+            self.log.error(err, self.update_Schedule_User.__name__)
         else:
-            log.info(self.update_Schedule_User.__name__)
+            self.log.info(self.update_Schedule_User.__name__)
 
 ###############################################
 # RETURN METHODS ##############################
@@ -135,9 +131,9 @@ class Database():
             self.cursor.execute(sql)
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.return_Adv_Message_User.__name__)
+            self.log.error(err, self.return_Adv_Message_User.__name__)
         else:
-            log.info(self.return_Adv_Message_User.__name__)
+            self.log.info(self.return_Adv_Message_User.__name__)
             return self.cursor.fetchall()
 
     def return_Channel_User(self, user_id):
@@ -147,9 +143,9 @@ class Database():
             self.cursor.execute(sql)
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.return_Channel_User.__name__)
+            self.log.error(err, self.return_Channel_User.__name__)
         else:
-            log.info(self.return_Channel_User.__name__)
+            self.log.info(self.return_Channel_User.__name__)
             return self.cursor.fetchall()
 
     def return_Schedule_User(self, user_id):
@@ -159,9 +155,9 @@ class Database():
             self.cursor.execute(sql)
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.return_Schedule_User.__name__)
+            self.log.error(err, self.return_Schedule_User.__name__)
         else:
-            log.info(self.return_Schedule_User.__name__)
+            self.log.info(self.return_Schedule_User.__name__)
             return self.cursor.fetchall()
 
     def return_All_Database_User(self, user_id):
@@ -171,10 +167,7 @@ class Database():
             self.cursor.execute(sql)
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            log.error(err, self.return_All_Database_User.__name__)
+            self.log.error(err, self.return_All_Database_User.__name__)
         else:
-            log.info(self.return_All_Database_User.__name__)
+            self.log.info(self.return_All_Database_User.__name__)
             return self.cursor.fetchall()
-
-
-log = Log()
