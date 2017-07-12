@@ -3,8 +3,8 @@
 import telebot
 import settings
 import path
-import utils.handler
-import utils.db
+import handler
+import db
 
 
 bot = telebot.TeleBot(settings.token)
@@ -15,8 +15,8 @@ user_will_send_advertising = set()
 user_will_send_channel = set()
 user_will_send_schedule = set()
 
-db = utils.db.Database(path.db, path.log, path.copy_log)
-handler = utils.handler.Handler(bot, chat_id, db, path.log, path.copy_log)
+db = db.Database(path.db, path.log, path.copy_log)
+handler = handler.Handler(bot, chat_id, db, path.log, path.copy_log)
 
 
 #########################################
