@@ -19,7 +19,6 @@ db = db.Database(path.db, path.log, path.copy_log)
 handler = handler.Handler(bot, chat_id, db, path.log, path.copy_log)
 
 
-#########################################
 @bot.message_handler(commands=['start'])
 def handleStart(message):
     handler.handleStart(message)

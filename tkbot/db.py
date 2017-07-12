@@ -47,7 +47,7 @@ class Database():
               USER_ID INTEGER UNIQUE,
               CHANNEL TEXT,
               MESSAGE TEXT,
-              SCHEDULE TEXT,
+              SCHEDULE BLOB,
               DATE INTEGER) """
         try:
             self.cursor.execute(sql)

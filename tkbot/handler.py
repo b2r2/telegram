@@ -58,13 +58,12 @@ class Handler():
         self.bot.send_message(message.from_user.id, msg)
 
     def handleData(self, message):
-        msg = "Your data is in the format (user ID, channel name,"\
+        msg = "Your data is in the format (channel name,"\
                 "advertising message, schedule)"
         self.bot.send_message(message.from_user.id, msg)
 
         data = self.db.returnAllMessages(message.from_user.id)
-
-        for user_data in data[0][1:-1]:
+        for user_data in data[0][2:-1]:
             self.bot.send_message(message.from_user.id, user_data)
 
     def handleAdvertising(self, message):
@@ -83,8 +82,8 @@ class Handler():
         self.bot.send_message(message.from_user.id, msg)
 
     def handleAdvertisingMessage(self, message):
-        # no photo!
-        self.bot.send_message(message.from_user.id, "It is your advertising message:")
+        self.bot.send_message(message.from_user.id,
+                              "It is your advertising message:")
 
         self.db.updateAdvMessage(message.from_user.id,
                                  message.text,
@@ -119,8 +118,8 @@ class Handler():
 
         self.bot.send_message(message.from_user.id,
                               self.db.returnScheduleMessage(message.from_user.id))
-
-        self.bot.send_message(message.from_user.id, "If you see the error try again!")
+        self.bot.send_message(message.from_user.id,
+                              "If you see the error try again!")
         self.db.show()
 
     def handlePhoto(self, message):
