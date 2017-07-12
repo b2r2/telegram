@@ -21,89 +21,88 @@ handler = handler.Handler(bot, chat_id, db, path.log, path.copy_log)
 
 #########################################
 @bot.message_handler(commands=['start'])
-def handle_Start(message):
-    handler.handle_Start(message)
+def handleStart(message):
+    handler.handleStart(message)
 
 
 @bot.message_handler(commands=['help'])
-def handle_Help(message):
-    handler.handle_Help(message)
+def handleHelp(message):
+    handler.handleHelp(message)
 
 
 @bot.message_handler(commands=['mydata'])
-def handle_Data(message):
-    handler.handle_Data(message)
+def handleData(message):
+    handler.handleData(message)
 
 
 @bot.message_handler(commands=['advertising'])
-def handle_Advertising(message):
+def handleAdvertising(message):
     user_will_send_advertising.add(message.from_user.id)
-    handler.handle_Advertising(message)
+    handler.handleAdvertising(message)
 
 
 @bot.message_handler(commands=['channel'])
-def handle_Channel(message):
+def handleChannel(message):
     user_will_send_channel.add(message.from_user.id)
-    handler.handle_Channel(message)
+    handler.handleChannel(message)
 
 
 @bot.message_handler(commands=['schedule'])
-def handle_Schedule(message):
+def handleSchedule(message):
     user_will_send_schedule.add(message.from_user.id)
-    handler.handle_Schedule(message)
+    handler.handleSchedule(message)
 
 
 @bot.message_handler(func=lambda message: message.from_user.id in
                      user_will_send_advertising)
-def handle_Advertising_Message(message):
+def handleAdvertisingMessage(message):
     # no photo!
     user_will_send_advertising.remove(message.from_user.id)
-    handler.handle_Advertising_Message(message)
+    handler.handleAdvertisingMessage(message)
 
 
 @bot.message_handler(func=lambda message: message.from_user.id in
                      user_will_send_channel)
-def handle_Channel_Message(message):
+def handleChannelMessage(message):
     user_will_send_channel.remove(message.from_user.id)
-    handler.handle_Channel_Message(message)
+    handler.handleChannelMessage(message)
 
 
 @bot.message_handler(func=lambda message: message.from_user.id in
                      user_will_send_schedule)
-def handle_Schedule_Message(message):
+def handleScheduleMessage(message):
     user_will_send_schedule.remove(message.from_user.id)
-    handler.handle_Schedule_Message(message)
+    handler.handleScheduleMessage(message)
 
 
-#########################################
 @bot.message_handler(content_types=['photo'])
-def handle_Photo(message):
-    handler.handle_Photo(message)
+def handlePhoto(message):
+    handler.handlePhoto(message)
 
 
 @bot.message_handler(content_types=['sticker'])
-def handle_Sticker(message):
-    handler.handle_Sticker(message)
+def handleSticker(message):
+    handler.handleSticker(message)
 
 
 @bot.message_handler(content_types=['audio'])
-def handle_Audio(message):
-    handler.handle_Audio(message)
+def handleAudio(message):
+    handler.handleAudio(message)
 
 
 @bot.message_handler(content_types=['document'])
-def handle_Document(message):
-    handler.handle_Document(message)
+def handleDocument(message):
+    handler.handleDocument(message)
 
 
 @bot.message_handler(content_types=['video'])
-def handle_Video(message):
-    handler.handle_Video(message)
+def handleVideo(message):
+    handler.handleVideo(message)
 
 
 @bot.message_handler(content_types=['text'])
-def handle_Text(message):
-    handler.handle_Text(message)
+def handleText(message):
+    handler.handleText(message)
 
 
 if __name__ == '__main__':
