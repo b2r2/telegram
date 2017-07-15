@@ -1,5 +1,6 @@
 import logging
 import telebot
+import utils.string as us
 
 
 class Log():
@@ -37,6 +38,7 @@ class Log():
 
 class Handler():
     def __init__(self, bot, chat_id, database, path_log, path_copy_log):
+        self.string = us.String()
         self.log = Log(path_log, path_copy_log)
         self.chat_id = chat_id
         self.bot = bot
@@ -78,7 +80,7 @@ class Handler():
         msg = "Here you can set up a schedule to release your" + \
             " advertising message in the system.\n" + \
             "Please enter only the hours without minutes" + \
-            " (e.g. 01:00, 23:15, etc.):"
+            " (e.g. 01:00 or 23:15,  etc.):"
         self.bot.send_message(message.from_user.id, msg)
 
     def handleAdvertisingMessage(self, message):
@@ -111,9 +113,8 @@ class Handler():
 
     def handleScheduleMessage(self, message):
         self.bot.send_message(message.from_user.id, "It's your schedule:")
-
         self.db.updateScheduleMessage(message.from_user.id,
-                                      message.text,
+                                      self.string.formattingSchedule(message.text),
                                       message.date)
 
         self.bot.send_message(message.from_user.id,
