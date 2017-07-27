@@ -44,7 +44,7 @@ class Handler():
         self.bot = bot
         self.db = database
 
-    def handleStart(self, message):
+    def handle_start(self, message):
         user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
         user_markup.row('/start', '/help')
         user_markup.row('/channel', '/schedule')
@@ -55,123 +55,123 @@ class Handler():
         self.bot.send_message(message.from_user.id, msg,
                               reply_markup=user_markup)
 
-    def handleHelp(self, message):
+    def handle_help(self, message):
         msg = """My options are very limited..."""
         self.bot.send_message(message.from_user.id, msg)
 
-    def handleData(self, message):
+    def handle_data(self, message):
         msg = "Your data is in the format (channel name,"\
                 "advertising message, schedule)"
         self.bot.send_message(message.from_user.id, msg)
 
-        data = self.db.returnAllMessages(message.from_user.id)
+        data = self.db.return_all_messages(message.from_user.id)
         for user_data in data[0][2:-1]:
             self.bot.send_message(message.from_user.id, user_data)
 
-    def handleAdvertising(self, message):
+    def handle_advertising(self, message):
         msg = "Give me your advertising message:"
         self.bot.send_message(message.from_user.id, msg)
 
-    def handleChannel(self, message):
+    def handle_channel(self, message):
         msg = "Please enter the name of the channel (e.g. @yourchannel)"
         self.bot.send_message(message.from_user.id, msg)
 
-    def handleSchedule(self, message):
+    def handle_schedule(self, message):
         msg = "Here you can set up a schedule to release your" + \
             " advertising message in the system.\n" + \
             "Please enter only the hours without minutes" + \
             " (e.g. 01:00 or 23:15,  etc.):"
         self.bot.send_message(message.from_user.id, msg)
 
-    def handleAdvertisingMessage(self, message):
+    def handle_advertising_message(self, message):
         self.bot.send_message(message.from_user.id,
                               "It is your advertising message:")
 
-        self.db.updateAdvMessage(message.from_user.id,
-                                 message.text,
-                                 message.date)
+        self.db.update_adv_message(message.from_user.id,
+                                   message.text,
+                                   message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.returnAdvMessage(message.from_user.id))
+                              self.db.return_adv_message(message.from_user.id))
 
         self.bot.send_message(message.from_user.id, "If you see the erorr,"
                               " try again!")
         self.db.show()
 
-    def handleChannelMessage(self, message):
+    def handle_channel_message(self, message):
         self.bot.send_message(message.from_user.id, "It is your channel:")
 
-        self.db.updateChannelMessage(message.from_user.id,
-                                     message.text,
-                                     message.date)
+        self.db.update_channel_message(message.from_user.id,
+                                       message.text,
+                                       message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.returnChannelMessage(message.from_user.id))
+                              self.db.return_channel_message(message.from_user.id))
         self.bot.send_message(message.from_user.id, "If you see the error,"
                               " try again!")
         self.db.show()
 
-    def handleScheduleMessage(self, message):
+    def handle_schedule_message(self, message):
         self.bot.send_message(message.from_user.id, "It's your schedule:")
-        self.db.updateScheduleMessage(message.from_user.id,
-                                      self.string.formattingSchedule(message.text),
-                                      message.date)
+        self.db.update_schedule_message(message.from_user.id,
+                                        self.db.return_schedule_message(message.text),
+                                        message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.returnScheduleMessage(message.from_user.id))
+                              self.db.return_schedule_message(message.from_user.id))
         self.bot.send_message(message.from_user.id,
                               "If you see the error try again!")
         self.db.show()
 
-    def handlePhoto(self, message):
+    def handle_photo(self, message):
         try:
             msg_photo = message.photo[0].file_id
             self.bot.send_photo(self.chat_id, msg_photo)
         except Exception as err:
-            self.log.error(err, self.handlePhoto.__name__)
+            self.log.error(err, self.handle_photo.__name__)
         else:
-            self.log.info(self.handlePhoto.__name__)
+            self.log.info(self.handle_photo.__name__)
 
-    def handleSticker(self, message):
+    def handle_sticker(self, message):
         try:
             msg_sticker = message.sticker.file_id
             self.bot.send_sticker(self.chat_id, msg_sticker)
         except Exception as err:
-            self.log.error(err, self.handleSticker.__name__)
+            self.log.error(err, self.handle_sticker.__name__)
         else:
-            self.log.info(self.handleSticker.__name__)
+            self.log.info(self.handle_sticker.__name__)
 
-    def handleAudio(self, message):
+    def handle_audio(self, message):
         try:
             msg_audio = message.audio.file_id
             self.bot.send_audio(self.chat_id, msg_audio)
         except Exception as err:
-            self.log.error(err, self.handleAudio.__name__)
+            self.log.error(err, self.handle_audio.__name__)
         else:
-            self.log.info(self.handleAudio.__name__)
+            self.log.info(self.handle_audio.__name__)
 
-    def handleDocument(self, message):
+    def handle_document(self, message):
         try:
             msg_document = message.document.file_id
             self.bot.send_document(self.chat_id, msg_document)
         except Exception as err:
-            self.log.error(err, self.handleDocument.__name__)
+            self.log.error(err, self.handle_document.__name__)
         else:
-            self.log.info(self.handleDocument.__name__)
+            self.log.info(self.handle_document.__name__)
 
-    def handleVideo(self, message):
+    def handle_video(self, message):
         try:
             msg_video = message.video.file_id
             self.bot.send_video(self.chat_id, msg_video)
         except Exception as err:
-            self.log.error(err, self.handleVideo.__name__)
+            self.log.error(err, self.handle_video.__name__)
         else:
-            self.log.info(self.handleVideo.__name__)
+            self.log.info(self.handle_video.__name__)
 
-    def handleText(self, message):
+    def handle_text(self, message):
         try:
             self.bot.send_message(self.chat_id, message.text)
         except Exception as err:
-            self.log.error(err, self.handleText)
+            self.log.error(err, self.handle_text)
         else:
-            self.log.info(self.handleText.__name__)
+            self.log.info(self.handle_text.__name__)

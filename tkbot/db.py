@@ -78,7 +78,7 @@ class Database():
         else:
             self.log.info(self.insert.__name__)
 
-    def updateAdvMessage(self, user_id, message, date):
+    def update_adv_message(self, user_id, message, date):
         """ Insert or Update advertising message """
         self.insert(user_id)
         sql = "UPDATE ADV_USERS SET MESSAGE=?, DATE=? WHERE USER_ID=?"
@@ -86,11 +86,11 @@ class Database():
             self.cursor.execute(sql, (message, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.updateAdvMessage.__name__)
+            self.log.error(err, self.update_adv_message.__name__)
         else:
-            self.log.info(self.updateAdvMessage.__name__)
+            self.log.info(self.update_adv_message.__name__)
 
-    def updateChannelMessage(self, user_id, channel, date):
+    def update_channel_message(self, user_id, channel, date):
         """ Insert or Update channel name """
         self.insert(user_id)
         sql = "UPDATE ADV_USERS SET CHANNEL=?, DATE=? WHERE USER_ID=?"
@@ -98,11 +98,11 @@ class Database():
             self.cursor.execute(sql, (channel, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.updateChannelMessage.__name__)
+            self.log.error(err, self.update_channel_message.__name__)
         else:
-            self.log.info(self.updateChannelMessage.__name__)
+            self.log.info(self.update_channel_message.__name__)
 
-    def updateScheduleMessage(self, user_id, sched, date):
+    def update_schedule_message(self, user_id, sched, date):
         """ Insert or Update schedule """
         self.insert(user_id)
         sql = "UPDATE ADV_USERS SET SCHEDULE=?, DATE=? WHERE USER_ID=?"
@@ -110,54 +110,54 @@ class Database():
             self.cursor.execute(sql, (sched, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.updateScheduleMessage.__name__)
+            self.log.error(err, self.update_schedule_message.__name__)
         else:
-            self.log.info(self.updateScheduleMessage.__name__)
+            self.log.info(self.update_schedule_message.__name__)
 
-    def returnAdvMessage(self, user_id):
+    def return_adv_message(self, user_id):
         """ Return advertising message """
         sql = "SELECT MESSAGE FROM ADV_USERS WHERE USER_ID=?"
         try:
             self.cursor.execute(sql, (user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.returnAdvMessage.__name__)
+            self.log.error(err, self.return_adv_message.__name__)
         else:
-            self.log.info(self.returnAdvMessage.__name__)
+            self.log.info(self.return_adv_message.__name__)
             return self.cursor.fetchall()
 
-    def returnChannelMessage(self, user_id):
+    def return_channel_message(self, user_id):
         """ Return Channel name """
         sql = "SELECT CHANNEL FROM ADV_USERS WHERE USER_ID=?"
         try:
             self.cursor.execute(sql, (user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.returnChannelMessage.__name__)
+            self.log.error(err, self.return_channel_message.__name__)
         else:
-            self.log.info(self.returnChannelMessage.__name__)
+            self.log.info(self.return_channel_message.__name__)
             return self.cursor.fetchall()
 
-    def returnScheduleMessage(self, user_id):
+    def return_schedule_message(self, user_id):
         """ Return schedule """
         sql = "SELECT SCHEDULE FROM ADV_USERS WHERE USER_ID=?"
         try:
             self.cursor.execute(sql, (user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.returnScheduleMessage.__name__)
+            self.log.error(err, self.return_schedule_message.__name__)
         else:
-            self.log.info(self.returnScheduleMessage.__name__)
+            self.log.info(self.return_schedule_message.__name__)
             return self.cursor.fetchall()
 
-    def returnAllMessages(self, user_id):
+    def return_all_messages(self, user_id):
         """ Return all the data about the user """
         sql = "SELECT * FROM ADV_USERS WHERE USER_ID=?"
         try:
             self.cursor.execute(sql, (user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.returnAllMessages.__name__)
+            self.log.error(err, self.return_all_messages.__name__)
         else:
-            self.log.info(self.returnAllMessages.__name__)
+            self.log.info(self.return_all_messages.__name__)
             return self.cursor.fetchall()
