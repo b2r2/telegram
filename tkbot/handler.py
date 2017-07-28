@@ -114,7 +114,7 @@ class Handler():
     def handle_schedule_message(self, message):
         self.bot.send_message(message.from_user.id, "It's your schedule:")
         self.db.update_schedule_message(message.from_user.id,
-                                        self.db.return_schedule_message(message.text),
+                                        self.string.formatting_sched(message.text),
                                         message.date)
 
         self.bot.send_message(message.from_user.id,
