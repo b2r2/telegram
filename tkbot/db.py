@@ -3,7 +3,7 @@ import logging
 
 
 class Log():
-    def __init__(self, path_log, path_copy_log):
+    def __init__(self, path):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
@@ -15,11 +15,11 @@ class Log():
         console.setFormatter(formatter)
         console.setLevel(logging.INFO)
 
-        filehandler = logging.FileHandler(path_log)
+        filehandler = logging.FileHandler(path.log)
         filehandler.setFormatter(formatter)
         filehandler.setLevel(logging.ERROR)
 
-        copy_filehandler = logging.FileHandler(path_copy_log)
+        copy_filehandler = logging.FileHandler(path.clog)
         copy_filehandler.setFormatter(formatter)
         copy_filehandler.setLevel(logging.ERROR)
 
@@ -36,10 +36,10 @@ class Log():
 
 
 class Database():
-    def __init__(self, path_db, path_log, path_copy_log):
-        self.log = Log(path_log, path_copy_log)
+    def __init__(self, path):
+        self.log = Log(path)
 
-        self.connection = sqlite3.connect(path_db,
+        self.connection = sqlite3.connect(path.db,
                                           check_same_thread=False)
         self.cursor = self.connection.cursor()
         sql = """ CREATE TABLE IF NOT EXISTS ADV_USERS
@@ -56,16 +56,6 @@ class Database():
             self.log.error(err, self.__init__.__name__)
         else:
             self.log.info(self.__init__.__name__)
-
-    def show(self):
-        sql = "SELECT * FROM ADV_USERS"
-        try:
-            self.cursor.execute(sql)
-        except sqlite3.DatabaseError as err:
-            self.log.error(err, self.show.__name__)
-        else:
-            self.log.info(self.show.__name__)
-            print(self.cursor.fetchall())
 
     def insert(self, user_id):
         """ Insert database """
@@ -114,50 +104,23 @@ class Database():
         else:
             self.log.info(self.update_schedule_message.__name__)
 
-    def return_adv_message(self, user_id):
-        """ Return advertising message """
-        sql = "SELECT MESSAGE FROM ADV_USERS WHERE USER_ID=?"
+    def return_data(self, user_id, sort):
+        if sort == 'advertising':
+            sql = "SELECT MESSAGE FROM ADV_USERS WHERE USER_ID=?"
+        elif sort == 'channel':
+            sql = "SELECT CHANNEL FROM ADV_USERS WHERE USER_ID=?"
+        elif sort == 'schedule':
+            sql = "SELECT SCHEDULE FROM ADV_USERS WHERE USER_ID=?"
+        elif sort == 'mydata':
+            sql = "SELECT MESSAGE, CHANNEL, SCHEDULE FROM ADV_USERS\
+                WHERE USER_ID=?"
+        else:
+            sql = "SELECT * FROM ADV_USERS WHERE USER_ID=?"
         try:
             self.cursor.execute(sql, (user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.return_adv_message.__name__)
+            self.log.error(err, self.return_data.__name__)
         else:
-            self.log.info(self.return_adv_message.__name__)
-            return self.cursor.fetchall()
-
-    def return_channel_message(self, user_id):
-        """ Return Channel name """
-        sql = "SELECT CHANNEL FROM ADV_USERS WHERE USER_ID=?"
-        try:
-            self.cursor.execute(sql, (user_id,))
-            self.connection.commit()
-        except sqlite3.DatabaseError as err:
-            self.log.error(err, self.return_channel_message.__name__)
-        else:
-            self.log.info(self.return_channel_message.__name__)
-            return self.cursor.fetchall()
-
-    def return_schedule_message(self, user_id):
-        """ Return schedule """
-        sql = "SELECT SCHEDULE FROM ADV_USERS WHERE USER_ID=?"
-        try:
-            self.cursor.execute(sql, (user_id,))
-            self.connection.commit()
-        except sqlite3.DatabaseError as err:
-            self.log.error(err, self.return_schedule_message.__name__)
-        else:
-            self.log.info(self.return_schedule_message.__name__)
-            return self.cursor.fetchall()
-
-    def return_all_messages(self, user_id):
-        """ Return all the data about the user """
-        sql = "SELECT * FROM ADV_USERS WHERE USER_ID=?"
-        try:
-            self.cursor.execute(sql, (user_id,))
-            self.connection.commit()
-        except sqlite3.DatabaseError as err:
-            self.log.error(err, self.return_all_messages.__name__)
-        else:
-            self.log.info(self.return_all_messages.__name__)
+            self.log.info(self.return_data.__name__)
             return self.cursor.fetchall()

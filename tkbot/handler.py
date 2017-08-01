@@ -1,10 +1,9 @@
 import logging
-import telebot
 import utils.string as us
 
 
 class Log():
-    def __init__(self, path_log, path_copy_log):
+    def __init__(self, path):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
@@ -16,11 +15,11 @@ class Log():
         console.setFormatter(formatter)
         console.setLevel(logging.INFO)
 
-        filehandler = logging.FileHandler(path_log)
+        filehandler = logging.FileHandler(path.log)
         filehandler.setFormatter(formatter)
         filehandler.setLevel(logging.ERROR)
 
-        copy_filehandler = logging.FileHandler(path_copy_log)
+        copy_filehandler = logging.FileHandler(path.clog)
         copy_filehandler.setFormatter(formatter)
         copy_filehandler.setLevel(logging.ERROR)
 
@@ -37,51 +36,11 @@ class Log():
 
 
 class Handler():
-    def __init__(self, bot, chat_id, database, path_log, path_copy_log):
+    def __init__(self, bot, db, path):
         self.string = us.String()
-        self.log = Log(path_log, path_copy_log)
-        self.chat_id = chat_id
+        self.log = Log(path)
         self.bot = bot
-        self.db = database
-
-    def handle_start(self, message):
-        user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
-        user_markup.row('/start', '/help')
-        user_markup.row('/channel', '/schedule')
-        user_markup.row('/advertising', '/mydata')
-
-        msg = """Hello!
-        \nYou can send message in channel {0}""".format(self.chat_id)
-        self.bot.send_message(message.from_user.id, msg,
-                              reply_markup=user_markup)
-
-    def handle_help(self, message):
-        msg = """My options are very limited..."""
-        self.bot.send_message(message.from_user.id, msg)
-
-    def handle_data(self, message):
-        msg = "Your data is in the format (channel name,"\
-                "advertising message, schedule)"
-        self.bot.send_message(message.from_user.id, msg)
-
-        data = self.db.return_all_messages(message.from_user.id)
-        for user_data in data[0][2:-1]:
-            self.bot.send_message(message.from_user.id, user_data)
-
-    def handle_advertising(self, message):
-        msg = "Give me your advertising message:"
-        self.bot.send_message(message.from_user.id, msg)
-
-    def handle_channel(self, message):
-        msg = "Please enter the name of the channel (e.g. @yourchannel)"
-        self.bot.send_message(message.from_user.id, msg)
-
-    def handle_schedule(self, message):
-        msg = "Here you can set up a schedule to release your" + \
-            " advertising message in the system.\n" + \
-            "Please enter only the hours without minutes" + \
-            " (e.g. 01:00 or 23:15,  etc.):"
-        self.bot.send_message(message.from_user.id, msg)
+        self.db = db
 
     def handle_advertising_message(self, message):
         self.bot.send_message(message.from_user.id,
@@ -92,11 +51,11 @@ class Handler():
                                    message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.return_adv_message(message.from_user.id))
+                              self.db.return_data(message.from_user.id,
+                                                  'advertising'))
 
         self.bot.send_message(message.from_user.id, "If you see the erorr,"
                               " try again!")
-        self.db.show()
 
     def handle_channel_message(self, message):
         self.bot.send_message(message.from_user.id, "It is your channel:")
@@ -106,72 +65,20 @@ class Handler():
                                        message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.return_channel_message(message.from_user.id))
+                              self.db.return_data(message.from_user.id,
+                                                  'channel'))
         self.bot.send_message(message.from_user.id, "If you see the error,"
                               " try again!")
-        self.db.show()
 
     def handle_schedule_message(self, message):
         self.bot.send_message(message.from_user.id, "It's your schedule:")
         self.db.update_schedule_message(message.from_user.id,
-                                        self.string.formatting_sched(message.text),
+                                        self.string.formatting_schedule(
+                                            message.text),
                                         message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.return_schedule_message(message.from_user.id))
+                              self.db.return_data(message.from_user.id,
+                                                  'schedule'))
         self.bot.send_message(message.from_user.id,
                               "If you see the error try again!")
-        self.db.show()
-
-    def handle_photo(self, message):
-        try:
-            msg_photo = message.photo[0].file_id
-            self.bot.send_photo(self.chat_id, msg_photo)
-        except Exception as err:
-            self.log.error(err, self.handle_photo.__name__)
-        else:
-            self.log.info(self.handle_photo.__name__)
-
-    def handle_sticker(self, message):
-        try:
-            msg_sticker = message.sticker.file_id
-            self.bot.send_sticker(self.chat_id, msg_sticker)
-        except Exception as err:
-            self.log.error(err, self.handle_sticker.__name__)
-        else:
-            self.log.info(self.handle_sticker.__name__)
-
-    def handle_audio(self, message):
-        try:
-            msg_audio = message.audio.file_id
-            self.bot.send_audio(self.chat_id, msg_audio)
-        except Exception as err:
-            self.log.error(err, self.handle_audio.__name__)
-        else:
-            self.log.info(self.handle_audio.__name__)
-
-    def handle_document(self, message):
-        try:
-            msg_document = message.document.file_id
-            self.bot.send_document(self.chat_id, msg_document)
-        except Exception as err:
-            self.log.error(err, self.handle_document.__name__)
-        else:
-            self.log.info(self.handle_document.__name__)
-
-    def handle_video(self, message):
-        try:
-            msg_video = message.video.file_id
-            self.bot.send_video(self.chat_id, msg_video)
-        except Exception as err:
-            self.log.error(err, self.handle_video.__name__)
-        else:
-            self.log.info(self.handle_video.__name__)
-
-    def handle_text(self, message):
-        try:
-            self.bot.send_message(self.chat_id, message.text)
-        except Exception as err:
-            self.log.error(err, self.handle_text)
-        else:
-            self.log.info(self.handle_text.__name__)
