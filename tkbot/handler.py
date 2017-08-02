@@ -1,43 +1,8 @@
-import logging
 import utils.string as us
 
 
-class Log():
-    def __init__(self, path):
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-
-        formatter = logging.Formatter(fmt='%(levelname)s:%(name)s# %(message)s'
-                                      '# (%(asctime)s)',
-                                      datefmt='%Y-%m-%d %H:%M:%S')
-
-        console = logging.StreamHandler()
-        console.setFormatter(formatter)
-        console.setLevel(logging.INFO)
-
-        filehandler = logging.FileHandler(path.log)
-        filehandler.setFormatter(formatter)
-        filehandler.setLevel(logging.ERROR)
-
-        copy_filehandler = logging.FileHandler(path.clog)
-        copy_filehandler.setFormatter(formatter)
-        copy_filehandler.setLevel(logging.ERROR)
-
-        self.logger.addHandler(console)
-        self.logger.addHandler(filehandler)
-        self.logger.addHandler(copy_filehandler)
-
-    def error(self, function_name, msg):
-        self.logger.exception('Error:  %s. Sending a file(type %s)',
-                              function_name, msg)
-
-    def info(self, function_name):
-        self.logger.info('%s: success', function_name)
-
-
 class Handler():
-    def __init__(self, bot, db, path):
-        self.log = Log(path)
+    def __init__(self, bot, db):
         self.bot = bot
         self.db = db
 
@@ -53,7 +18,7 @@ class Handler():
                               self.db.return_field(message.from_user.id,
                                                    'advertising'))
 
-        self.bot.send_message(message.from_user.id, "If you see the erorr,"
+        self.bot.send_message(message.from_user.id, "If you see the error,"
                               " try again!")
 
     def handle_channel_message(self, message):

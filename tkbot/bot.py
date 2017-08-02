@@ -6,6 +6,7 @@ import settings
 import path
 import handler
 import db
+import log
 
 
 bot = telebot.TeleBot(settings.token)
@@ -14,8 +15,9 @@ user_will_send_advertising = set()
 user_will_send_channel = set()
 user_will_send_schedule = set()
 
-db = db.Database(path)
-handler = handler.Handler(bot, db, path)
+log = log.Log(path)
+db = db.Database(log, path)
+handler = handler.Handler(bot, db)
 commands = commands.Commands(bot, db, path)
 
 
