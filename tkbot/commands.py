@@ -1,11 +1,11 @@
 import telebot
+import utils.string as us
 
 
 class Commands():
-    def __init__(self, bot, db, path, utils_string):
+    def __init__(self, bot, db, path):
         self.bot = bot
         self.db = db
-        self.utils_string = utils_string
 
     def handle_start(self, message):
         user_markup = telebot.types.ReplyKeyboardMarkup(True, True)
@@ -36,11 +36,11 @@ class Commands():
             " (e.g. 01:00 or 23:15,  etc.):"
         self.bot.send_message(message.from_user.id, msg)
 
-    def handle_data(self, message):
+    def handle_field_user(self, message):
         msg = "Your data is in the format (channel name,"\
                 "advertising message, schedule)"
         self.bot.send_message(message.from_user.id, msg)
 
-        data = self.db.return_data(message.from_user.id, 'mydata')
-        data = self.utils_string.formatting_data(data)
+        data = self.db.return_field(message.from_user.id, 'mydata')
+        data = us.formatting_field_user(data)
         self.bot.send_message(message.from_user.id, data)

@@ -6,7 +6,6 @@ import settings
 import path
 import handler
 import db
-import utils.string
 
 
 bot = telebot.TeleBot(settings.token)
@@ -16,9 +15,8 @@ user_will_send_channel = set()
 user_will_send_schedule = set()
 
 db = db.Database(path)
-utils_string = utils.string.String()
 handler = handler.Handler(bot, db, path)
-commands = commands.Commands(bot, db, path, utils_string)
+commands = commands.Commands(bot, db, path)
 
 
 @bot.message_handler(commands=['start'])
@@ -32,8 +30,8 @@ def handle_help(message):
 
 
 @bot.message_handler(commands=['mydata'])
-def handle_data(message):
-    commands.handle_data(message)
+def handle_field_user(message):
+    commands.handle_field_user(message)
 
 
 @bot.message_handler(commands=['advertising'])

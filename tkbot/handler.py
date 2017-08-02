@@ -37,7 +37,6 @@ class Log():
 
 class Handler():
     def __init__(self, bot, db, path):
-        self.string = us.String()
         self.log = Log(path)
         self.bot = bot
         self.db = db
@@ -51,8 +50,8 @@ class Handler():
                                    message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.return_data(message.from_user.id,
-                                                  'advertising'))
+                              self.db.return_field(message.from_user.id,
+                                                   'advertising'))
 
         self.bot.send_message(message.from_user.id, "If you see the erorr,"
                               " try again!")
@@ -65,20 +64,20 @@ class Handler():
                                        message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.return_data(message.from_user.id,
-                                                  'channel'))
+                              self.db.return_field(message.from_user.id,
+                                                   'channel'))
         self.bot.send_message(message.from_user.id, "If you see the error,"
                               " try again!")
 
     def handle_schedule_message(self, message):
         self.bot.send_message(message.from_user.id, "It's your schedule:")
         self.db.update_schedule_message(message.from_user.id,
-                                        self.string.formatting_schedule(
+                                        us.formatting_schedule(
                                             message.text),
                                         message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.return_data(message.from_user.id,
-                                                  'schedule'))
+                              self.db.return_field(message.from_user.id,
+                                                   'schedule'))
         self.bot.send_message(message.from_user.id,
                               "If you see the error try again!")

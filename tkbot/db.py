@@ -57,20 +57,20 @@ class Database():
         else:
             self.log.info(self.__init__.__name__)
 
-    def insert(self, user_id):
+    def add_field(self, user_id):
         """ Insert database """
         sql = "INSERT OR IGNORE INTO ADV_USERS(USER_ID) VALUES(?)"
         try:
             self.cursor.execute(sql, (user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.insert.__name__)
+            self.log.error(err, self.add_field.__name__)
         else:
-            self.log.info(self.insert.__name__)
+            self.log.info(self.add_field.__name__)
 
     def update_adv_message(self, user_id, message, date):
         """ Insert or Update advertising message """
-        self.insert(user_id)
+        self.add_field(user_id)
         sql = "UPDATE ADV_USERS SET MESSAGE=?, DATE=? WHERE USER_ID=?"
         try:
             self.cursor.execute(sql, (message, date, user_id,))
@@ -82,7 +82,7 @@ class Database():
 
     def update_channel_message(self, user_id, channel, date):
         """ Insert or Update channel name """
-        self.insert(user_id)
+        self.add_field(user_id)
         sql = "UPDATE ADV_USERS SET CHANNEL=?, DATE=? WHERE USER_ID=?"
         try:
             self.cursor.execute(sql, (channel, date, user_id,))
@@ -94,7 +94,7 @@ class Database():
 
     def update_schedule_message(self, user_id, sched, date):
         """ Insert or Update schedule """
-        self.insert(user_id)
+        self.add_field(user_id)
         sql = "UPDATE ADV_USERS SET SCHEDULE=?, DATE=? WHERE USER_ID=?"
         try:
             self.cursor.execute(sql, (sched, date, user_id,))
@@ -104,7 +104,7 @@ class Database():
         else:
             self.log.info(self.update_schedule_message.__name__)
 
-    def return_data(self, user_id, sort):
+    def return_field(self, user_id, sort):
         if sort == 'advertising':
             sql = "SELECT MESSAGE FROM ADV_USERS WHERE USER_ID=?"
         elif sort == 'channel':
@@ -112,15 +112,14 @@ class Database():
         elif sort == 'schedule':
             sql = "SELECT SCHEDULE FROM ADV_USERS WHERE USER_ID=?"
         elif sort == 'mydata':
-            sql = "SELECT MESSAGE, CHANNEL, SCHEDULE FROM ADV_USERS\
+            sql = "SELECT CHANNEL,MESSAGE, SCHEDULE FROM ADV_USERS\
                 WHERE USER_ID=?"
         else:
             sql = "SELECT * FROM ADV_USERS WHERE USER_ID=?"
         try:
             self.cursor.execute(sql, (user_id,))
-            self.connection.commit()
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.return_data.__name__)
+            self.log.error(err, self.return_field.__name__)
         else:
-            self.log.info(self.return_data.__name__)
+            self.log.info(self.return_field.__name__)
             return self.cursor.fetchall()
