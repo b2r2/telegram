@@ -1,5 +1,4 @@
-token = "123456789:AAa12312idiuspjdpiaoshfuisdhffui2hA"
-chat_id = "@names channel or user ID"
-logs_path = "..."
-copy_logs_path = "..."
-db_path = "..."
+token = "token ID"
+log = 'path log file'
+clog = 'path copy log file'
+db = 'path database'
