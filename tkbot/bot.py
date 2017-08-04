@@ -3,7 +3,6 @@
 import telebot
 import commands
 import settings
-import path
 import handler
 import db
 import log
@@ -15,10 +14,10 @@ user_will_send_advertising = set()
 user_will_send_channel = set()
 user_will_send_schedule = set()
 
-log = log.Log(path)
-db = db.Database(log, path)
-handler = handler.Handler(bot, db)
-commands = commands.Commands(bot, db, path)
+log = log.Log(settings)
+db = db.Database(log, settings)
+handler = handler.HandlerDatabase(bot, db)
+commands = commands.HandlerCommands(bot, db, settings)
 
 
 @bot.message_handler(commands=['start'])

@@ -1,7 +1,7 @@
 import utils.string as us
 
 
-class Handler():
+class HandlerDatabase():
     def __init__(self, bot, db):
         self.bot = bot
         self.db = db

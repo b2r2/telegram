@@ -2,7 +2,7 @@ import telebot
 import utils.string as us
 
 
-class Commands():
+class HandlerCommands():
     def __init__(self, bot, db, path):
         self.bot = bot
         self.db = db
