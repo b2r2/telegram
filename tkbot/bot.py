@@ -32,7 +32,7 @@ def handle_help(message):
 
 @bot.message_handler(commands=['mydata'])
 def handle_field_user(message):
-    commands.handle_field_user(message)
+    commands.handle_user_data(message)
 
 
 @bot.message_handler(commands=['advertising'])
