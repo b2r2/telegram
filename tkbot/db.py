@@ -6,7 +6,7 @@ class Database():
         self.log = log
         self.connection = sqlite3.connect(path.db,
                                           check_same_thread=False)
-        self.cursor = self.connection.cursor()
+        cursor = self.connection.cursor()
         sql = """ CREATE TABLE IF NOT EXISTS ADV_USERS
               (ID INTEGER PRIMARY KEY AUTOINCREMENT,
               USER_ID INTEGER UNIQUE,
@@ -15,7 +15,7 @@ class Database():
               SCHEDULE TEXT,
               DATE INTEGER) """
         try:
-            self.cursor.execute(sql)
+            cursor.execute(sql)
             self.connection.commit()
         except sqlite3.DatabaseError as err:
             self.log.error(err, self.__init__.__name__)
@@ -26,7 +26,8 @@ class Database():
         """ Insert database """
         sql = "INSERT OR IGNORE INTO ADV_USERS(USER_ID) VALUES(?)"
         try:
-            self.cursor.execute(sql, (user_id,))
+            cursor = self.connection.cursor()
+            cursor.execute(sql, (user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
             self.log.error(err, self.add_field.__name__)
@@ -38,7 +39,8 @@ class Database():
         self.add_field(user_id)
         sql = "UPDATE ADV_USERS SET MESSAGE=?, DATE=? WHERE USER_ID=?"
         try:
-            self.cursor.execute(sql, (message, date, user_id,))
+            cursor = self.connection.cursor()
+            cursor.execute(sql, (message, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
             self.log.error(err, self.update_adv_message.__name__)
@@ -50,7 +52,8 @@ class Database():
         self.add_field(user_id)
         sql = "UPDATE ADV_USERS SET CHANNEL=?, DATE=? WHERE USER_ID=?"
         try:
-            self.cursor.execute(sql, (channel, date, user_id,))
+            cursor = self.connection.cursor()
+            cursor.execute(sql, (channel, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
             self.log.error(err, self.update_channel_message.__name__)
@@ -62,7 +65,8 @@ class Database():
         self.add_field(user_id)
         sql = "UPDATE ADV_USERS SET SCHEDULE=?, DATE=? WHERE USER_ID=?"
         try:
-            self.cursor.execute(sql, (sched, date, user_id,))
+            cursor = self.connection.cursor()
+            cursor.execute(sql, (sched, date, user_id,))
             self.connection.commit()
         except sqlite3.DatabaseError as err:
             self.log.error(err, self.update_schedule_message.__name__)
@@ -82,9 +86,10 @@ class Database():
         else:
             sql = "SELECT * FROM ADV_USERS WHERE USER_ID=?"
         try:
-            self.cursor.execute(sql, (user_id,))
+            cursor = self.connection.cursor()
+            cursor.execute(sql, (user_id,))
         except sqlite3.DatabaseError as err:
             self.log.error(err, self.return_field.__name__)
         else:
             self.log.info(self.return_field.__name__)
-            return self.cursor.fetchall()
+            return cursor.fetchall()
