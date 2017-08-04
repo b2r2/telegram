@@ -36,7 +36,7 @@ class HandlerCommands():
             " (e.g. 01:00 or 23:15,  etc.):"
         self.bot.send_message(message.from_user.id, msg)
 
-    def handle_field_user(self, message):
+    def handle_user_data(self, message):
         msg = "Your data is in the format (channel name,"\
                 "advertising message, schedule)"
         self.bot.send_message(message.from_user.id, msg)
