@@ -15,8 +15,8 @@ class HandlerDatabase():
                                    message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.return_field(message.from_user.id,
-                                                   'advertising'))
+                              self.db.return_field_user(message.from_user.id,
+                                                        'advertising'))
 
         self.bot.send_message(message.from_user.id, "If you see the error,"
                               " try again!")
@@ -29,8 +29,8 @@ class HandlerDatabase():
                                        message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.return_field(message.from_user.id,
-                                                   'channel'))
+                              self.db.return_field_user(message.from_user.id,
+                                                        'channel'))
         self.bot.send_message(message.from_user.id, "If you see the error,"
                               " try again!")
 
@@ -42,7 +42,7 @@ class HandlerDatabase():
                                         message.date)
 
         self.bot.send_message(message.from_user.id,
-                              self.db.return_field(message.from_user.id,
-                                                   'schedule'))
+                              self.db.return_field_user(message.from_user.id,
+                                                        'schedule'))
         self.bot.send_message(message.from_user.id,
                               "If you see the error try again!")

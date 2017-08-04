@@ -41,6 +41,6 @@ class HandlerCommands():
                 "advertising message, schedule)"
         self.bot.send_message(message.from_user.id, msg)
 
-        data = self.db.return_field(message.from_user.id, 'mydata')
+        data = self.db.return_field_user(message.from_user.id, 'mydata')
         data = us.formatting_field_user(data)
         self.bot.send_message(message.from_user.id, data)

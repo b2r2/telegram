@@ -73,7 +73,7 @@ class Database():
         else:
             self.log.info(self.update_schedule_message.__name__)
 
-    def return_field(self, user_id, sort):
+    def return_field_user(self, user_id, sort):
         if sort == 'advertising':
             sql = "SELECT MESSAGE FROM ADV_USERS WHERE USER_ID=?"
         elif sort == 'channel':
@@ -89,7 +89,7 @@ class Database():
             cursor = self.connection.cursor()
             cursor.execute(sql, (user_id,))
         except sqlite3.DatabaseError as err:
-            self.log.error(err, self.return_field.__name__)
+            self.log.error(err, self.return_field_user.__name__)
         else:
-            self.log.info(self.return_field.__name__)
+            self.log.info(self.return_field_user.__name__)
             return cursor.fetchall()
