@@ -10,8 +10,7 @@ bot = telebot.TeleBot(settings.token)
 
 @bot.message_handler(content_types=['text'])
 def handle_text(message):
-    target_chat = 237426682
-    bot.forward_message(chat_id=target_chat,
+    bot.forward_message(chat_id=settings.target_chat,
                         from_chat_id=message.chat.id,
                         message_id=message.message_id)
 

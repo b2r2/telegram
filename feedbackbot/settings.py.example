@@ -1,1 +1,2 @@
 token = 'token ID'
+target_chat = 'your_target_chat(ID, integer)'
