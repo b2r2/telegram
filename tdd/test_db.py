@@ -7,7 +7,7 @@ class TestcaseDatabase(unittest.TestCase):
     @mock.patch('db.sqlite3.connect')
     def setUp(self, mock_sqlite3_connect):
         self.mock_connection = mock_sqlite3_connect.return_value
-        self.helper = db.Database()
+        self.fixture = db.Database()
 
     def test_create_table(self):
         mock_cursor = self.mock_connection.cursor()
@@ -19,7 +19,7 @@ class TestcaseDatabase(unittest.TestCase):
             MESSAGE TEXT,\
             SCHEDULE TEXT)"
 
-        self.helper
+        self.fixture
         mock_cursor.execute.assert_called_with(call)
 
     def test_add_user(self):
@@ -28,7 +28,7 @@ class TestcaseDatabase(unittest.TestCase):
         user_id = 'user_id'
         call = "INSERT OR IGNORE INTO USERS(USER_ID) VALUES(?)"
 
-        self.helper.add_user(user_id)
+        self.fixture.add_user(user_id)
         mock_cursor.execute.assert_called_with(call, (user_id,))
 
     def test_update_channel(self):
@@ -37,7 +37,7 @@ class TestcaseDatabase(unittest.TestCase):
         channel, user_id = 'channel', 'user_id'
         call = "UPDATE USERS SET CHANNEL=? WHERE USER_ID=?"
 
-        self.helper.update_channel(channel, user_id)
+        self.fixture.update_channel(channel, user_id)
         mock_cursor.execute.assert_called_with(call, (channel, user_id,))
 
     def test_update_message(self):
@@ -46,7 +46,7 @@ class TestcaseDatabase(unittest.TestCase):
         message, user_id = 'message', 'user_id'
         call = "UPDATE USERS SET MESSAGE=? WHERE USER_ID=?"
 
-        self.helper.update_message(message, user_id)
+        self.fixture.update_message(message, user_id)
         mock_cursor.execute.assert_called_with(call, (message, user_id,))
 
     def test_update_schedule(self):
@@ -55,7 +55,7 @@ class TestcaseDatabase(unittest.TestCase):
         schedule, user_id = 'schedule', 'user_id'
         call = "UPDATE USERS SET SCHEDULE=? WHERE USER_ID=?"
 
-        self.helper.update_schedule(schedule, user_id)
+        self.fixture.update_schedule(schedule, user_id)
         mock_cursor.execute.assert_called_with(call, (schedule, user_id,))
 
 
