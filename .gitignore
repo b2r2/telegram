@@ -8,4 +8,5 @@ path.py
 *.db
 *.pem
 tests/
+mocking/
 log/
