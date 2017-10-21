@@ -2,10 +2,38 @@
 
 
 import telebot
+import commands
 import settings
 
 
 bot = telebot.TeleBot(settings.token)
+commands = commands.HandlerCommands(bot, telebot)
+
+
+@bot.message_handler(commands=['start'])
+def handle_start(message):
+    commands.handle_start(message)
+
+
+@bot.message_handler(commands=['about', u'О канале'])
+def handle_about(message):
+    print("about!")
+    commands.handle_about(message)
+
+
+@bot.message_handler(commands=['feedback'])
+def handle_feedback(message):
+    commands.handle_feedback(message)
+
+
+@bot.message_handler(commands=['advertising'])
+def handle_advertising(message):
+    commands.handle_advertising(message)
+
+
+@bot.message_handler(commands=['suggest'])
+def handle_suggest(message):
+    commands.handle_suggest(message)
 
 
 @bot.message_handler(content_types=['text'])
