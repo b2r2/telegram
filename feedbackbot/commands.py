@@ -1,7 +1,8 @@
 class HandlerCommands():
-    def __init__(self, bot, telebot):
+    def __init__(self, bot, telebot, settings):
         self.bot = bot
         self.telebot = telebot
+        self.settings = settings
 
     def handle_start(self, message):
         user_markup = self.telebot.types.ReplyKeyboardMarkup(True, True)
@@ -9,22 +10,38 @@ class HandlerCommands():
         user_markup.row(u'Условия рекламы', u'Предложить новость')
 
         msg = u'Доброго времени суток!\nС помощью меня Вы можете связаться'\
-            ' с моим создателем и администратором сообщества'\
-            ' https://t.me/nuancesprog\nДля этого выберете одно из'\
+            ' с моим создателем и администратором сообщества ' +\
+            self.settings.long_link + '\nДля этого выберете одно из'\
             'возможных действий!'
         self.bot.send_message(message.from_user.id, msg,
                               reply_markup=user_markup)
 
     def handle_about(self, message):
         msg = 'Проект создан для программистов любого уровня.\n'\
-            'Мы стараемся делиться с вами интересной информацией каждый день!'
+            'Здесь Вы всегда можете узнать что-то новое!\n\n'\
+            'С помощью меня Вы можете связаться с моим создателем и'\
+            ' администратором сообщества ' + self.settings.short_link +\
+            '\nДля этого выберете одно из возможных действий из'\
+            'контекстного меню.'
         self.bot.send_message(message.from_user.id, msg)
 
     def handle_feedback(self, message):
-        pass
+        msg = 'Вы можете оставить свои отзывы о канале и пожелания.\n'\
+            'Мы стараемся для Вас!'
+        self.bot.send_message(message.from_user.id, msg)
 
     def handle_advertising(self, message):
-        pass
+        msg = 'Условия рекламы на канале ' + self.settings.short_link +\
+            '\n\nОтдельный пост: 600 рублей, выход поста 14:00\n'\
+            'Пост в подборке: 300 рублей, выход поста в 20:00\n\n'\
+            'Пост не удаляется из ленты, топ от 5 часов.\n\n'\
+            'Постоянным клиентам и при единовременной покупкe нескольких'\
+            ' постов действует система скидок:\n'\
+            'От 3 постов - 5%\n'\
+            'От 5 постов - 7%\n'\
+            'От 10 постов - 10%\n'
+        self.bot.send_message(message.from_user.id, msg)
 
     def handle_suggest(self, message):
-        pass
+        msg = 'Здесь Вы можете поделиться интересными фактами и событиями.'
+        self.bot.send_message(message.from_user.id, msg)
