@@ -7,7 +7,7 @@ import settings
 
 
 bot = telebot.TeleBot(settings.token)
-commands = commands.HandlerCommands(bot, telebot, settings)
+commands = commands.CommandsHandler(bot, telebot, settings)
 
 
 @bot.message_handler(commands=['start'])
