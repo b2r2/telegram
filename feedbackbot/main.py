@@ -49,6 +49,9 @@ def handle_text(message):
         bot.forward_message(chat_id=settings.target_chat,
                             from_chat_id=message.chat.id,
                             message_id=message.message_id)
+        smiley = u'\U0001F609'
+        msg = 'Ваше сообщение отправлено!\nВсего доброго ' + smiley
+        bot.send_message(message.from_user.id, msg)
 
 
 if __name__ == '__main__':
