@@ -1,14 +1,8 @@
-import time
-
-
 class CommandsHandler():
-    def __init__(self, bot, telebot, settings,
-                 known_users, user_step):
+    def __init__(self, bot, telebot, settings):
         self.bot = bot
         self.telebot = telebot
         self.settings = settings
-        self.known_users = known_users
-        self.user_step = user_step
 
     def handle_start(self, message):
         user_markup = self.telebot.types.ReplyKeyboardMarkup(True, True)
@@ -16,18 +10,12 @@ class CommandsHandler():
         user_markup.row(u'Условия рекламы', u'Предложить новость')
 
         cid = message.chat.id
-        if cid not in self.known_users:
-            self.known_users.append(cid)
-            self.user_step[cid] = 0
 
-            msg = (u'Доброго времени суток!\nС помощью меня Вы можете связаться '
-                   'с моим создателем и администратором сообщества ' +
-                   self.settings.long_link + '\nДля этого выберете одно из '
-                   'возможных действий!')
-            self.bot.send_message(cid, msg,
-                                  reply_markup=user_markup)
-        else:
-            self.bot.send_message(cid, "Рады, что Вы снова с нами!")
+        msg = (u'Доброго времени суток!\nС помощью меня Вы можете связаться '
+               'с моим создателем и администратором сообщества ' +
+               self.settings.long_link + '\nДля этого выберете одно из '
+               'возможных действий!')
+        self.bot.send_message(cid, msg, reply_markup=user_markup)
 
     def handle_about(self, message):
         cid = message.chat.id
@@ -73,14 +61,26 @@ class CommandsHandler():
 
         smiley = u'\U0001F609'
         msg = "Ваше сообщение отправлено!\nСпасибо! " + smiley
+        markup = self.telebot.types.InlineKeyboardMarkup()
+        markup.add(self.telebot.types.InlineKeyboardButton('Ответить',
+                                                           callback_data=str(cid)))
         self.bot.send_message(cid, msg)
 
-        self.bot.forward_message(chat_id=self.settings.target_chat,
-                                 from_chat_id=cid,
-                                 message_id=mid)
+        # self.bot.forward_message(chat_id=self.settings.target_chat,
+        #                          from_chat_id=cid,
+        #                          message_id=mid)
 
-    def handle_long_text(message):
+        mod_text = (message.chat.first_name + ' [' + str(cid) + ']\n' +
+                    message.text)
+        self.bot.send_message(chat_id=self.settings.target_chat,
+                             text= mod_text, disable_notification=True,
+                             reply_markup=markup)
+
+    def handle_long_text(self, message):
         cid = message.chat.id
         self.send_chat_action(cid, 'typing')
-        time.sleep(3)
-        bot.send_message(cid, '.')
+
+    def handle_answer(self, message, cid):
+        self.bot.send_message(cid, message.text)
+
+
