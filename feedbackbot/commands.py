@@ -57,24 +57,22 @@ class CommandsHandler():
 
     def handle_text(self, message):
         cid = message.chat.id
-        mid = message.message_id
 
         smiley = u'\U0001F609'
+
         msg = "Ваше сообщение отправлено!\nСпасибо! " + smiley
+
         markup = self.telebot.types.InlineKeyboardMarkup()
         markup.add(self.telebot.types.InlineKeyboardButton('Ответить',
                                                            callback_data=str(cid)))
         self.bot.send_message(cid, msg)
 
-        # self.bot.forward_message(chat_id=self.settings.target_chat,
-        #                          from_chat_id=cid,
-        #                          message_id=mid)
-
         mod_text = (message.chat.first_name + ' [' + str(cid) + ']\n' +
                     message.text)
+
         self.bot.send_message(chat_id=self.settings.target_chat,
-                             text= mod_text, disable_notification=True,
-                             reply_markup=markup)
+                              text=mod_text, disable_notification=True,
+                              reply_markup=markup)
 
     def handle_long_text(self, message):
         cid = message.chat.id
@@ -82,5 +80,3 @@ class CommandsHandler():
 
     def handle_answer(self, message, cid):
         self.bot.send_message(cid, message.text)
-
-
