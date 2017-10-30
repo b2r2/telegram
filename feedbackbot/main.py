@@ -20,8 +20,7 @@ def command_start(message):
 @bot.callback_query_handler(lambda call: True)
 def callback_inline(call):
     global known_user
-    if call.message:
-        known_user = int(call.data)
+    known_user = int(call.data)
 
 
 @bot.message_handler(func=lambda message: message.text == 'О канале')
