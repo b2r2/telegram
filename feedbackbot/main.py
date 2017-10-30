@@ -4,12 +4,12 @@
 import telebot
 import commands
 import settings
+import query
 
-
-known_user = 0
 
 bot = telebot.TeleBot(settings.token)
 commands = commands.CommandsHandler(bot, telebot, settings)
+query = query.Callback()
 
 
 @bot.message_handler(commands=['start'])
@@ -19,8 +19,7 @@ def command_start(message):
 
 @bot.callback_query_handler(lambda call: True)
 def callback_inline(call):
-    global known_user
-    known_user = int(call.data)
+    query.add_user_chat_id(call.data)
 
 
 @bot.message_handler(func=lambda message: message.text == 'О канале')
@@ -45,10 +44,9 @@ def handle_suggest(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_text(message):
-    global known_user
-    if known_user:
-        commands.handle_answer(message, known_user)
-        known_user = 0
+    if query.check_user_chat_id():
+        commands.handle_answer(message, query.get_user_chat_id())
+        query.reset_user_chat_id()
     else:
         commands.handle_text(message)
 
