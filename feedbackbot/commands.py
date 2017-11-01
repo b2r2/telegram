@@ -79,7 +79,9 @@ class CommandsHandler():
                                  cid, message.message_id)
 
     def handle_admin_message(self, message, cid):
-        self.bot.send_message(cid, message.text)
+        button = 'reset'
+        inline_markup = self.markup.get_inline(button, button)
+        self.bot.send_message(cid, message.text, reply_markup=inline_markup)
 
     def handle_chat_action(self, message):
         cid = message.chat.id

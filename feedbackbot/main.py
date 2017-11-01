@@ -49,6 +49,11 @@ def handle_callback(call):
     callback.set_user_chat_id(call.data)
 
 
+@bot.callback_query_handler(lambda call: call.data == 'reset')
+def handle_callback(call):
+    callback.reset_user_chat_id()
+
+
 @bot.message_handler(func=lambda message: message.text == 'О канале')
 def handle_about(message):
     commands.handle_chat_action(message)
@@ -79,7 +84,6 @@ def handle_message(message):
     if user_chat_id:
         commands.handle_chat_action(message)
         commands.handle_admin_message(message, user_chat_id)
-        callback.reset_user_chat_id()
     else:
         commands.handle_chat_action(message)
         commands.handle_message(message)
