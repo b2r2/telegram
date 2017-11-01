@@ -72,16 +72,18 @@ class CommandsHandler():
         inline_markup = self.markup.get_inline(button, cid)
 
         self.bot.send_message(chat_id=self.settings.target_chat,
-                              text='Новое сообщение!', disable_notification=True,
+                              text='Новое сообщение!',
                               reply_markup=inline_markup)
 
         self.bot.forward_message(self.settings.target_chat,
                                  cid, message.message_id)
 
     def handle_admin_message(self, message, cid):
-        button = 'reset'
+        button = 'Сброс'
         inline_markup = self.markup.get_inline(button, button)
-        self.bot.send_message(cid, message.text, reply_markup=inline_markup)
+        self.bot.send_message(cid, message.text)
+        self.bot.send_message(self.settings.target_chat,
+                              'Сообщение отправлено', reply_markup=inline_markup)
 
     def handle_chat_action(self, message):
         cid = message.chat.id

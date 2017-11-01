@@ -44,13 +44,13 @@ def command_suggest(message):
     commands.handle_suggest(message)
 
 
-@bot.callback_query_handler(lambda call: True)
-def handle_callback(call):
+@bot.callback_query_handler(lambda call: call.data.isdigit())
+def handle_set_query(call):
     callback.set_user_chat_id(call.data)
 
 
-@bot.callback_query_handler(lambda call: call.data == 'reset')
-def handle_callback(call):
+@bot.callback_query_handler(lambda call: call.data.isalpha())
+def handle_reset_query(call):
     callback.reset_user_chat_id()
 
 
@@ -82,10 +82,8 @@ def handle_suggest(message):
 def handle_message(message):
     user_chat_id = callback.get_user_chat_id()
     if user_chat_id:
-        commands.handle_chat_action(message)
         commands.handle_admin_message(message, user_chat_id)
     else:
-        commands.handle_chat_action(message)
         commands.handle_message(message)
 
 
