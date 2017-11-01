@@ -1,21 +1,26 @@
 class CommandsHandler():
-    def __init__(self, bot, telebot, settings):
+    def __init__(self, bot, markup, settings):
         self.bot = bot
-        self.telebot = telebot
+        self.markup = markup
         self.settings = settings
 
     def handle_start(self, message):
-        user_markup = self.telebot.types.ReplyKeyboardMarkup(True, True)
-        user_markup.row(u'О канале', u'Отзывы и предложения')
-        user_markup.row(u'Условия рекламы', u'Предложить новость')
 
         cid = message.chat.id
+
+        list_commands = {
+            'about': u'О канале',
+            'feedback': u'Отзывы и предложения',
+            'advertising': u'Условия рекламы',
+            'suggest': u'Предложить новость'
+        }
+        keyboard_markup = self.markup.get_keyboard(**list_commands)
 
         msg = (u'Доброго времени суток!\nС помощью меня Вы можете связаться '
                'с моим создателем и администратором сообщества ' +
                self.settings.long_link + '\nДля этого выберете одно из '
                'возможных действий!')
-        self.bot.send_message(cid, msg, reply_markup=user_markup)
+        self.bot.send_message(cid, msg, reply_markup=keyboard_markup)
 
     def handle_about(self, message):
         cid = message.chat.id
@@ -55,28 +60,27 @@ class CommandsHandler():
         msg = 'Здесь Вы можете поделиться интересными фактами и событиями.'
         self.bot.send_message(cid, msg)
 
-    def handle_text(self, message):
+    def handle_message(self, message):
         cid = message.chat.id
 
         smiley = u'\U0001F609'
 
         msg = "Ваше сообщение отправлено!\nСпасибо! " + smiley
-
-        markup = self.telebot.types.InlineKeyboardMarkup()
-        markup.add(self.telebot.types.InlineKeyboardButton('Ответить',
-                                                           callback_data=str(cid)))
         self.bot.send_message(cid, msg)
 
-        mod_text = (message.chat.first_name + ' [' + str(cid) + ']\n' +
-                    message.text)
+        button = 'Ответить ' + message.chat.first_name
+        inline_markup = self.markup.get_inline(button, cid)
 
         self.bot.send_message(chat_id=self.settings.target_chat,
-                              text=mod_text, disable_notification=True,
-                              reply_markup=markup)
+                              text='Новое сообщение!', disable_notification=True,
+                              reply_markup=inline_markup)
 
-    def handle_long_text(self, message):
-        cid = message.chat.id
-        self.send_chat_action(cid, 'typing')
+        self.bot.forward_message(self.settings.target_chat,
+                                 cid, message.message_id)
 
-    def handle_answer(self, message, cid):
+    def handle_admin_message(self, message, cid):
         self.bot.send_message(cid, message.text)
+
+    def handle_chat_action(self, message):
+        cid = message.chat.id
+        self.bot.send_chat_action(cid, 'typing')
