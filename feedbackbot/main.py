@@ -14,6 +14,9 @@ markup = markup.Markup(types)
 commands = commands.CommandsHandler(bot, settings)
 callback = cb.Callback()
 
+content_types_ignore = ['audio', 'document', 'photo', 'sticker', 'video',
+                        'video_note', 'voice', 'location', 'contact']
+
 
 @bot.message_handler(commands=['start'])
 def command_start(message):
@@ -83,6 +86,11 @@ def handle_message(message):
         commands.handle_message(message)
         commands.handle_forward_message(message)
         commands.handle_button(message, text, inline_button)
+
+
+@bot.message_handler(func=lambda message: True, content_types=content_types_ignore)
+def handle_ignore_message(message):
+    commands.handle_ignore(message)
 
 
 @bot.callback_query_handler(lambda call: call.data == 'Сброс')

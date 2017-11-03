@@ -67,3 +67,9 @@ class CommandsHandler():
         self.bot.send_message(chat_id=self.settings.target_chat,
                               text=text,
                               reply_markup=inline_button)
+
+    def handle_ignore(self, message):
+        cid = message.chat.id
+        smiley = u'\U0001F609'
+        msg = 'Извините, но я различаю только текст и смайлики ' + smiley
+        self.bot.send_message(cid, msg)
