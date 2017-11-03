@@ -44,14 +44,14 @@ def command_suggest(message):
     commands.handle_suggest(message)
 
 
-@bot.callback_query_handler(lambda call: call.data.isdigit())
-def handle_set_query(call):
-    callback.set_user_chat_id(call.data)
-
-
-@bot.callback_query_handler(lambda call: call.data.isalpha())
+@bot.callback_query_handler(lambda call: call.data == 'Сброс')
 def handle_reset_query(call):
     callback.reset_user_chat_id()
+
+
+@bot.callback_query_handler(lambda call: call.data != 'Сброс')
+def handle_set_query(call):
+    callback.set_user_chat_id(call.data)
 
 
 @bot.message_handler(func=lambda message: message.text == 'О канале')
