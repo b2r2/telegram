@@ -14,19 +14,19 @@ markup = markup.Markup(types)
 commands = commands.CommandsHandler(bot, settings)
 callback = cb.Callback()
 
-content_types_ignore = ['audio', 'document', 'photo', 'sticker', 'video',
-                        'video_note', 'voice', 'location', 'contact']
+ignore_types = ['audio', 'document', 'photo', 'sticker', 'video',
+                'video_note', 'voice', 'location', 'contact']
 
 
 @bot.message_handler(commands=['start'])
 def command_start(message):
-    instructions_name = {
+    buttons_names = {
         'about': u'О канале',
         'feedback': u'Отзывы и предложения',
         'advertising': u'Условия рекламы',
         'suggest': u'Предложить новость',
     }
-    keyboard = markup.get_keyboard(**instructions_name)
+    keyboard = markup.get_keyboard(**buttons_names)
     commands.handle_start(message, keyboard)
 
 
@@ -80,15 +80,15 @@ def handle_message(message):
         commands.handle_admin_message(message, user_chat_id)
         commands.handle_button(message, text, inline_button)
     else:
-        button_name = 'Ответить ' + message.chat.first_name
         text = 'Новое сообщение!'
+        button_name = 'Ответить ' + message.chat.first_name
         inline_button = markup.get_inline_button(button_name, message.chat.id)
         commands.handle_message(message)
         commands.handle_forward_message(message)
         commands.handle_button(message, text, inline_button)
 
 
-@bot.message_handler(func=lambda message: True, content_types=content_types_ignore)
+@bot.message_handler(func=lambda message: True, content_types=ignore_types)
 def handle_ignore_message(message):
     commands.handle_ignore(message)
 
