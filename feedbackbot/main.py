@@ -74,18 +74,18 @@ def handle_suggest(message):
 def handle_message(message):
     user_chat_id = callback.get_user_chat_id()
     if user_chat_id:
-        text = 'Сообщение ' + message.chat.first_name + ' отправлено!'
+        text = 'Сообщение отправлено!'
         button_name = 'Сброс'
         inline_button = markup.get_inline_button(button_name, button_name)
         commands.handle_admin_message(message, user_chat_id)
-        commands.handle_button(message, text, inline_button)
+        commands.handle_button(text, inline_button)
     else:
         text = 'Новое сообщение!'
         button_name = 'Ответить ' + message.chat.first_name
         inline_button = markup.get_inline_button(button_name, message.chat.id)
         commands.handle_message(message)
         commands.handle_forward_message(message)
-        commands.handle_button(message, text, inline_button)
+        commands.handle_button(text, inline_button)
 
 
 @bot.message_handler(func=lambda message: True, content_types=ignore_types)
@@ -95,12 +95,14 @@ def handle_ignore_message(message):
 
 @bot.callback_query_handler(lambda call: call.data == 'Сброс')
 def handle_reset_user(call):
+    commands.handle_action_callback('Чат сброшен')
     callback.reset_user_chat_id()
 
 
 @bot.callback_query_handler(lambda call: call.data != 'Сброс')
 def handle_set_user(call):
     callback.set_user_chat_id(call.data)
+    commands.handle_action_callback('Выбран чат: ', call.data)
 
 
 if __name__ == '__main__':

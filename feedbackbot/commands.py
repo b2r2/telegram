@@ -63,7 +63,7 @@ class CommandsHandler():
     def handle_admin_message(self, message, cid):
         self.bot.send_message(cid, message.text)
 
-    def handle_button(self, message, text, inline_button):
+    def handle_button(self, text, inline_button):
         self.bot.send_message(chat_id=self.settings.target_chat,
                               text=text,
                               reply_markup=inline_button)
@@ -73,3 +73,7 @@ class CommandsHandler():
         smiley = u'\U0001F609'
         msg = 'Извините, но я различаю только текст и смайлики ' + smiley
         self.bot.send_message(cid, msg)
+
+    def handle_action_callback(self, text, call_data=''):
+        self.bot.send_message(self.settings.target_chat,
+                              text + call_data)
