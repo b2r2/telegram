@@ -68,8 +68,8 @@ class CommandsHandler():
         msg = "Ваше сообщение отправлено!\nСпасибо! " + smiley
         self.bot.send_message(cid, msg)
 
-        button = 'Ответить ' + message.chat.first_name
-        inline_markup = self.markup.get_inline(button, cid)
+        btn = 'Ответить ' + message.chat.first_name
+        inline_markup = self.markup.get_inline_button(btn, cid)
 
         self.bot.send_message(chat_id=self.settings.target_chat,
                               text='Новое сообщение!',
@@ -79,8 +79,8 @@ class CommandsHandler():
                                  cid, message.message_id)
 
     def handle_admin_message(self, message, cid):
-        button = 'Сброс'
-        inline_markup = self.markup.get_inline(button, button)
+        btn = 'Сброс'
+        inline_markup = self.markup.get_inline_button(btn, btn)
         self.bot.send_message(cid, message.text)
         self.bot.send_message(self.settings.target_chat,
                               'Сообщение отправлено', reply_markup=inline_markup)

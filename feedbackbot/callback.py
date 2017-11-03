@@ -1,4 +1,6 @@
 class Callback():
+    """ This method sets the parameter switch user
+        and reset """
     def __init__(self):
         self.user_chat_id = 0
 

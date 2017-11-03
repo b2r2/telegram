@@ -2,16 +2,17 @@
 
 
 import telebot
+from telebot import types
 import commands
 import settings
-import query
+import callback as cb
 import markup
 
 
 bot = telebot.TeleBot(settings.token)
-markup = markup.Markup(telebot)
+markup = markup.Markup(types)
 commands = commands.CommandsHandler(bot, markup, settings)
-callback = query.Callback()
+callback = cb.Callback()
 
 
 @bot.message_handler(commands=['start'])
@@ -45,12 +46,12 @@ def command_suggest(message):
 
 
 @bot.callback_query_handler(lambda call: call.data == 'Сброс')
-def handle_reset_query(call):
+def handle_reset_user(call):
     callback.reset_user_chat_id()
 
 
 @bot.callback_query_handler(lambda call: call.data != 'Сброс')
-def handle_set_query(call):
+def handle_set_user(call):
     callback.set_user_chat_id(call.data)
 
 
