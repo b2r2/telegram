@@ -1,8 +1,9 @@
 class CommandsHandler():
-    def __init__(self, bot, settings):
+    def __init__(self, bot, settings, json):
         self.bot = bot
         self.settings = settings
         self.user_cid = 0
+        self.json = json
 
     def handle_start(self, message, keyboard):
         cid = message.chat.id
@@ -86,3 +87,14 @@ class CommandsHandler():
 
     def handle_return_user_cid(self):
         return self.user_cid
+
+    def handle_serialization_message(self, message, action):
+        msg_data = {
+            'name': message.chat.first_name,
+            'cid': message.chat.id,
+            'action': action
+        }
+        return self.json.dumps(msg_data)
+
+    def handle_deserialization_message(self, callback_data):
+        return self.json.loads(callback_data)

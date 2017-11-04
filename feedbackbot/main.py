@@ -11,7 +11,7 @@ import json
 
 bot = telebot.TeleBot(settings.token)
 markup = markup.Markup(types)
-commands = commands.CommandsHandler(bot, settings)
+commands = commands.CommandsHandler(bot, settings, json)
 
 ignore_types = ['audio', 'document', 'photo', 'sticker', 'video',
                 'video_note', 'voice', 'location', 'contact']
@@ -75,16 +75,14 @@ def handle_message(message):
     if user_chat_id:
         text = 'Сообщение отправлено!'
         button_name = 'Сброс'
-        msg_data = (message.chat.first_name, message.chat.id, False)
-        msg_data = json.dumps(msg_data)
+        msg_data = commands.handle_serialization_message(message, False)
         inline_button = markup.return_inline_button(button_name, msg_data)
         commands.handle_admin_message(message, user_chat_id)
         commands.handle_button(text, inline_button)
     else:
         text = 'Новое сообщение!'
         button_name = 'Ответить ' + message.chat.first_name
-        msg_data = (message.chat.first_name, message.chat.id, True)
-        msg_data = json.dumps(msg_data)
+        msg_data = commands.handle_serialization_message(message, True)
         inline_button = markup.return_inline_button(button_name, msg_data)
         commands.handle_message(message)
         commands.handle_forward_message(message)
@@ -96,18 +94,17 @@ def handle_ignore_message(message):
     commands.handle_ignore(message)
 
 
-@bot.callback_query_handler(lambda call: json.loads(call.data)[-1] is False)
-def handle_reset_user(call):
-    text = 'Чат с пользователем ' + json.loads(call.data)[0] + ' сброшен'
-    commands.handle_reset_user_cid()
-    commands.handle_action_callback(text)
-
-
-@bot.callback_query_handler(lambda call: json.loads(call.data)[-1] is True)
-def handle_set_user(call):
-    text = 'Выбран чат с пользователем ' + json.loads(call.data)[0]
-    commands.handle_set_user_cid(json.loads(call.data)[1])
-    commands.handle_action_callback(text)
+@bot.callback_query_handler(lambda call: True)
+def handle_callback(call):
+    callback = commands.handle_deserialization_message(call.data)
+    if callback['action']:
+        text = 'Выбран чат с пользователем ' + callback['name']
+        commands.handle_set_user_cid(callback['cid'])
+        commands.handle_action_callback(text)
+    else:
+        text = 'Чат с пользователем ' + callback['name'] + ' сброшен'
+        commands.handle_reset_user_cid()
+        commands.handle_action_callback(text)
 
 
 if __name__ == '__main__':
