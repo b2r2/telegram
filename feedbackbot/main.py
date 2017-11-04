@@ -5,14 +5,12 @@ import telebot
 from telebot import types
 import commands
 import settings
-import callback as cb
 import markup
 
 
 bot = telebot.TeleBot(settings.token)
 markup = markup.Markup(types)
 commands = commands.CommandsHandler(bot, settings)
-callback = cb.Callback()
 
 types_ignore = ['audio', 'document', 'photo', 'sticker', 'video',
                 'video_note', 'voice', 'location', 'contact']
@@ -72,7 +70,7 @@ def handle_suggest(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_message(message):
-    user_chat_id = callback.get_user_chat_id()
+    user_chat_id = commands.handle_return_user_cid()
     if user_chat_id:
         text = 'Сообщение ' + message.chat.first_name + ' отправлено!'
         button_name = 'Сброс'
@@ -95,12 +93,14 @@ def handle_ignore_message(message):
 
 @bot.callback_query_handler(lambda call: call.data == 'Сброс')
 def handle_reset_user(call):
-    callback.reset_user_chat_id()
+    commands.handle_reset_user_cid()
+    commands.handle_action_callback('Чат сброшен!')
 
 
 @bot.callback_query_handler(lambda call: call.data != 'Сброс')
 def handle_set_user(call):
-    callback.set_user_chat_id(call.data)
+    commands.handle_set_user_cid(call.data)
+    commands.handle_action_callback('Выбран чат: ', call.data)
 
 
 if __name__ == '__main__':
