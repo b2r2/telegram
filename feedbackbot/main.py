@@ -5,14 +5,13 @@ import telebot
 from telebot import types
 import commands
 import settings
-import callback as cb
 import markup
+import json
 
 
 bot = telebot.TeleBot(settings.token)
 markup = markup.Markup(types)
 commands = commands.CommandsHandler(bot, settings)
-callback = cb.Callback()
 
 ignore_types = ['audio', 'document', 'photo', 'sticker', 'video',
                 'video_note', 'voice', 'location', 'contact']
@@ -72,17 +71,21 @@ def handle_suggest(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_message(message):
-    user_chat_id = callback.get_user_chat_id()
+    user_chat_id = commands.handle_return_user_cid()
     if user_chat_id:
         text = 'Сообщение отправлено!'
         button_name = 'Сброс'
-        inline_button = markup.get_inline_button(button_name, button_name)
+        msg_data = (message.chat.first_name, message.chat.id, False)
+        msg_data = json.dumps(msg_data)
+        inline_button = markup.get_inline_button(button_name, msg_data)
         commands.handle_admin_message(message, user_chat_id)
         commands.handle_button(text, inline_button)
     else:
         text = 'Новое сообщение!'
         button_name = 'Ответить ' + message.chat.first_name
-        inline_button = markup.get_inline_button(button_name, message.chat.id)
+        msg_data = (message.chat.first_name, message.chat.id, True)
+        msg_data = json.dumps(msg_data)
+        inline_button = markup.get_inline_button(button_name, msg_data)
         commands.handle_message(message)
         commands.handle_forward_message(message)
         commands.handle_button(text, inline_button)
@@ -93,16 +96,18 @@ def handle_ignore_message(message):
     commands.handle_ignore(message)
 
 
-@bot.callback_query_handler(lambda call: call.data == 'Сброс')
+@bot.callback_query_handler(lambda call: json.loads(call.data)[-1] is False)
 def handle_reset_user(call):
-    commands.handle_action_callback('Чат сброшен')
-    callback.reset_user_chat_id()
+    text = 'Час с пользователем ' + json.loads(call.data)[0] + ' сброшен'
+    commands.handle_reset_user_cid()
+    commands.handle_action_callback(text)
 
 
-@bot.callback_query_handler(lambda call: call.data != 'Сброс')
+@bot.callback_query_handler(lambda call: json.loads(call.data)[-1] is True)
 def handle_set_user(call):
-    callback.set_user_chat_id(call.data)
-    commands.handle_action_callback('Выбран чат: ', call.data)
+    text = 'Выбран чат с пользователем ' + json.loads(call.data)[0]
+    commands.handle_set_user_cid(json.loads(call.data)[1])
+    commands.handle_action_callback(text)
 
 
 if __name__ == '__main__':

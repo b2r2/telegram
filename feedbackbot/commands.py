@@ -2,6 +2,7 @@ class CommandsHandler():
     def __init__(self, bot, settings):
         self.bot = bot
         self.settings = settings
+        self.user_cid = 0
 
     def handle_start(self, message, keyboard):
         cid = message.chat.id
@@ -68,12 +69,20 @@ class CommandsHandler():
                               text=text,
                               reply_markup=inline_button)
 
+    def handle_action_callback(self, text):
+        self.bot.send_message(self.settings.target_chat, text)
+
     def handle_ignore(self, message):
         cid = message.chat.id
         smiley = u'\U0001F609'
         msg = 'Извините, но я различаю только текст и смайлики ' + smiley
         self.bot.send_message(cid, msg)
 
-    def handle_action_callback(self, text, call_data=''):
-        self.bot.send_message(self.settings.target_chat,
-                              text + call_data)
+    def handle_set_user_cid(self, cid):
+        self.user_cid = cid
+
+    def handle_reset_user_cid(self):
+        self.user_cid = 0
+
+    def handle_return_user_cid(self):
+        return self.user_cid
