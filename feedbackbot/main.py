@@ -25,7 +25,7 @@ def command_start(message):
         'advertising': u'Условия рекламы',
         'suggest': u'Предложить новость',
     }
-    keyboard = markup.get_keyboard(**buttons_names)
+    keyboard = markup.return_keyboard(**buttons_names)
     commands.handle_start(message, keyboard)
 
 
@@ -77,7 +77,7 @@ def handle_message(message):
         button_name = 'Сброс'
         msg_data = (message.chat.first_name, message.chat.id, False)
         msg_data = json.dumps(msg_data)
-        inline_button = markup.get_inline_button(button_name, msg_data)
+        inline_button = markup.return_inline_button(button_name, msg_data)
         commands.handle_admin_message(message, user_chat_id)
         commands.handle_button(text, inline_button)
     else:
@@ -85,7 +85,7 @@ def handle_message(message):
         button_name = 'Ответить ' + message.chat.first_name
         msg_data = (message.chat.first_name, message.chat.id, True)
         msg_data = json.dumps(msg_data)
-        inline_button = markup.get_inline_button(button_name, msg_data)
+        inline_button = markup.return_inline_button(button_name, msg_data)
         commands.handle_message(message)
         commands.handle_forward_message(message)
         commands.handle_button(text, inline_button)
@@ -98,7 +98,7 @@ def handle_ignore_message(message):
 
 @bot.callback_query_handler(lambda call: json.loads(call.data)[-1] is False)
 def handle_reset_user(call):
-    text = 'Час с пользователем ' + json.loads(call.data)[0] + ' сброшен'
+    text = 'Чат с пользователем ' + json.loads(call.data)[0] + ' сброшен'
     commands.handle_reset_user_cid()
     commands.handle_action_callback(text)
 

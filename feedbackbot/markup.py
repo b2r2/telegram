@@ -3,14 +3,14 @@ class Markup():
     def __init__(self, types):
         self.types = types
 
-    def get_keyboard(self, **buttons_name):
+    def return_keyboard(self, **buttons_name):
         markup = self.types.ReplyKeyboardMarkup(True, True, row_width=2)
         markup.add(buttons_name['about'], buttons_name['feedback'])
         markup.add(buttons_name['advertising'], buttons_name['suggest'])
 
         return markup
 
-    def get_inline_button(self, button_name, cid):
+    def return_inline_button(self, button_name, cid):
         markup = self.types.InlineKeyboardMarkup()
         markup.add(self.types.InlineKeyboardButton(button_name,
                                                    callback_data=str(cid)))
