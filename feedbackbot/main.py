@@ -6,6 +6,7 @@ from telebot import types
 import commands
 import settings
 import markup
+import json
 
 
 bot = telebot.TeleBot(settings.token)
@@ -74,13 +75,17 @@ def handle_message(message):
     if user_chat_id:
         text = 'Сообщение ' + message.chat.first_name + ' отправлено!'
         button_name = 'Сброс'
-        inline_button = markup.get_inline_button(button_name, button_name)
+        msg_data = (message.chat.first_name, message.chat.id, False)
+        msg_data = json.dumps(msg_data)
+        inline_button = markup.get_inline_button(button_name, msg_data)
         commands.handle_admin_message(message, user_chat_id)
         commands.handle_button(message, text, inline_button)
     else:
         button_name = 'Ответить ' + message.chat.first_name
         text = 'Новое сообщение!'
-        inline_button = markup.get_inline_button(button_name, message.chat.id)
+        msg_data = (message.chat.first_name, message.chat.id, True)
+        msg_data = json.dumps(msg_data)
+        inline_button = markup.get_inline_button(button_name, msg_data)
         commands.handle_message(message)
         commands.handle_forward_message(message)
         commands.handle_button(message, text, inline_button)
@@ -91,16 +96,18 @@ def handle_ignore_message(message):
     commands.handle_ignore(message)
 
 
-@bot.callback_query_handler(lambda call: call.data == 'Сброс')
+@bot.callback_query_handler(lambda call: json.loads(call.data)[-1] is False)
 def handle_reset_user(call):
+    text = 'Час с пользователем ' + json.loads(call.data)[0] + ' сброшен'
     commands.handle_reset_user_cid()
-    commands.handle_action_callback('Чат сброшен!')
+    commands.handle_action_callback(text)
 
 
-@bot.callback_query_handler(lambda call: call.data != 'Сброс')
+@bot.callback_query_handler(lambda call: json.loads(call.data)[-1] is True)
 def handle_set_user(call):
-    commands.handle_set_user_cid(call.data)
-    commands.handle_action_callback('Выбран чат: ', call.data)
+    text = 'Выбран чат с пользователем ' + json.loads(call.data)[0]
+    commands.handle_set_user_cid(json.loads(call.data)[1])
+    commands.handle_action_callback(text)
 
 
 if __name__ == '__main__':

@@ -69,9 +69,8 @@ class CommandsHandler():
                               text=text,
                               reply_markup=inline_button)
 
-    def handle_action_callback(self, text, call_data=''):
-        self.bot.send_message(self.settings.target_chat,
-                              text + call_data)
+    def handle_action_callback(self, text):
+        self.bot.send_message(self.settings.target_chat, text)
 
     def handle_ignore(self, message):
         cid = message.chat.id
@@ -80,7 +79,7 @@ class CommandsHandler():
         self.bot.send_message(cid, msg)
 
     def handle_set_user_cid(self, cid):
-        self.user_cid = int(cid)
+        self.user_cid = cid
 
     def handle_reset_user_cid(self):
         self.user_cid = 0
