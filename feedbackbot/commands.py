@@ -56,7 +56,10 @@ class CommandsHandler():
         cid = message.chat.id
         smiley = u'\U0001F609'
         msg = u'Ваше сообщение отправлено!\nСпасибо! ' + smiley
-        self.bot.send_message(cid, msg)
+        if cid == self.settings.target_chat:
+            pass
+        else:
+            self.bot.send_message(cid, msg)
 
     def handle_forward_message(self, message):
         self.bot.forward_message(self.settings.target_chat,

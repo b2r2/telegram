@@ -73,6 +73,7 @@ def handle_suggest(message):
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def handle_message(message):
     user_chat_id = commands.handle_return_user_cid()
+    commands.handle_message(message)
     if user_chat_id:
         text = u'Сообщение отправлено!'
         button = 'Reset'
@@ -85,7 +86,6 @@ def handle_message(message):
         button = 'Answer'
         msg_data = commands.handle_serialization_message(message, button)
         inline_button = markup.return_inline_button(button, msg_data)
-        commands.handle_message(message)
         commands.handle_forward_message(message)
         commands.handle_button(text, inline_button)
 
