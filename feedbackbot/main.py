@@ -74,16 +74,16 @@ def handle_message(message):
     user_chat_id = commands.handle_return_user_cid()
     if user_chat_id:
         text = 'Сообщение отправлено!'
-        button_name = 'Сброс'
-        msg_data = commands.handle_serialization_message(message, False)
-        inline_button = markup.return_inline_button(button_name, msg_data)
+        button = 'Сброс'
+        msg_data = commands.handle_serialization_message(message, button)
+        inline_button = markup.return_inline_button(button, msg_data)
         commands.handle_admin_message(message, user_chat_id)
         commands.handle_button(text, inline_button)
     else:
-        text = 'Новое сообщение!'
-        button_name = 'Ответить ' + message.chat.first_name
-        msg_data = commands.handle_serialization_message(message, True)
-        inline_button = markup.return_inline_button(button_name, msg_data)
+        text = 'Новое сообщение от пользователя ' + str(message.chat.id)
+        button = 'Ответить'
+        msg_data = commands.handle_serialization_message(message, button)
+        inline_button = markup.return_inline_button(button, msg_data)
         commands.handle_message(message)
         commands.handle_forward_message(message)
         commands.handle_button(text, inline_button)
@@ -97,13 +97,13 @@ def handle_ignore_message(message):
 @bot.callback_query_handler(lambda call: True)
 def handle_callback(call):
     callback = commands.handle_deserialization_message(call.data)
-    if callback['action']:
-        text = 'Выбран чат с пользователем ' + callback['name']
-        commands.handle_set_user_cid(callback['cid'])
-        commands.handle_action_callback(text)
-    else:
+    if callback['action'] == 'Сброс':
         text = 'Чат с пользователем ' + callback['name'] + ' сброшен'
         commands.handle_reset_user_cid()
+        commands.handle_action_callback(text)
+    elif callback['action'] == 'Ответить':
+        text = 'Выбран чат с пользователем ' + callback['name']
+        commands.handle_set_user_cid(callback['cid'])
         commands.handle_action_callback(text)
 
 

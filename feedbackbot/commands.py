@@ -88,11 +88,11 @@ class CommandsHandler():
     def handle_return_user_cid(self):
         return self.user_cid
 
-    def handle_serialization_message(self, message, action):
+    def handle_serialization_message(self, message, button):
         msg_data = {
             'name': message.chat.first_name,
             'cid': message.chat.id,
-            'action': action
+            'action': button
         }
         return self.json.dumps(msg_data)
 
