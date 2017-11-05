@@ -70,9 +70,6 @@ class CommandsHandler():
                               text=text,
                               reply_markup=inline_button)
 
-    def handle_action_callback(self, text):
-        self.bot.send_message(self.settings.target_chat, text)
-
     def handle_ignore(self, message):
         cid = message.chat.id
         smiley = u'\U0001F609'

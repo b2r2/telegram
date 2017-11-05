@@ -101,11 +101,13 @@ def handle_callback(call):
     if callback['action'] == 'Reset':
         text = u'Чат с пользователем ' + callback['name'] + u' сброшен'
         commands.handle_reset_user_cid()
-        commands.handle_action_callback(text)
+        bot.answer_callback_query(callback_query_id=call.id,
+                                  show_alert=False, text=text)
     elif callback['action'] == 'Answer':
         text = u'Выбран чат с пользователем ' + callback['name']
         commands.handle_set_user_cid(callback['cid'])
-        commands.handle_action_callback(text)
+        bot.answer_callback_query(callback_query_id=call.id,
+                                  show_alert=False, text=text)
 
 
 if __name__ == '__main__':
