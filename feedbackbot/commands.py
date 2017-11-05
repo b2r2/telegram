@@ -9,53 +9,53 @@ class CommandsHandler():
         cid = message.chat.id
 
         msg = (u'Доброго времени суток!\nС помощью меня Вы можете связаться '
-               'с моим создателем и администратором сообщества ' +
-               self.settings.long_link + '\nДля этого выберете одно из '
-               'возможных действий!')
+               u'с моим создателем и администратором сообщества ' +
+               self.settings.long_link + u'\nДля этого выберете одно из '
+               u'возможных действий!')
         self.bot.send_message(cid, msg, reply_markup=keyboard)
 
     def handle_about(self, message):
         cid = message.chat.id
 
-        msg = ('Проект создан для программистов любого уровня.\n'
-               'Здесь Вы всегда можете узнать что-то новое!\n\n'
-               'С помощью меня Вы можете связаться с моим создателем и '
-               'администратором сообщества ' + self.settings.short_link +
-               '\nДля этого выберете одно из возможных действий из '
-               'контекстного меню.')
+        msg = (u'Проект создан для программистов любого уровня.\n'
+               u'Здесь Вы всегда можете узнать что-то новое!\n\n'
+               u'С помощью меня Вы можете связаться с моим создателем и '
+               u'администратором сообщества ' + self.settings.short_link +
+               u'\nДля этого выберете одно из возможных действий из '
+               u'контекстного меню.')
         self.bot.send_message(cid, msg)
 
     def handle_feedback(self, message):
         cid = message.chat.id
 
-        msg = ('Вы можете оставить свои отзывы о канале и пожелания.\n'
-               'Мы стараемся для Вас!')
+        msg = (u'Вы можете оставить свои отзывы о канале и пожелания.\n'
+               u'Мы стараемся для Вас!')
         self.bot.send_message(cid, msg)
 
     def handle_advertising(self, message):
         cid = message.chat.id
 
-        msg = ('Условия рекламы на канале ' + self.settings.short_link +
-               '\n\nОтдельный пост: 1000 рублей, выход поста 14:00\n'
-               'Пост в подборке: 500 рублей, выход поста в 20:00\n\n'
-               'Пост не удаляется из ленты, топ от 5 часов.\n\n'
-               'Постоянным клиентам и при единовременной покупкe нескольких '
-               'постов действует система скидок:\n'
-               'От 3 постов - 5%\n'
-               'От 5 постов - 7%\n'
-               'От 10 постов - 10%\n')
+        msg = (u'Условия рекламы на канале ' + self.settings.short_link +
+               u'\n\nОтдельный пост: 1000 рублей, выход поста 14:00\n'
+               u'Пост в подборке: 500 рублей, выход поста в 20:00\n\n'
+               u'Пост не удаляется из ленты, топ от 5 часов.\n\n'
+               u'Постоянным клиентам и при единовременной покупкe нескольких '
+               u'постов действует система скидок:\n'
+               u'От 3 постов - 5%\n'
+               u'От 5 постов - 7%\n'
+               u'От 10 постов - 10%\n')
         self.bot.send_message(cid, msg)
 
     def handle_suggest(self, message):
         cid = message.chat.id
 
-        msg = 'Здесь Вы можете поделиться интересными фактами и событиями.'
+        msg = u'Здесь Вы можете поделиться интересными фактами и событиями.'
         self.bot.send_message(cid, msg)
 
     def handle_message(self, message):
         cid = message.chat.id
         smiley = u'\U0001F609'
-        msg = "Ваше сообщение отправлено!\nСпасибо! " + smiley
+        msg = u'Ваше сообщение отправлено!\nСпасибо! ' + smiley
         self.bot.send_message(cid, msg)
 
     def handle_forward_message(self, message):
@@ -76,7 +76,7 @@ class CommandsHandler():
     def handle_ignore(self, message):
         cid = message.chat.id
         smiley = u'\U0001F609'
-        msg = 'Извините, но я различаю только текст и смайлики ' + smiley
+        msg = u'Извините, но я различаю только текст и смайлики ' + smiley
         self.bot.send_message(cid, msg)
 
     def handle_set_user_cid(self, cid):

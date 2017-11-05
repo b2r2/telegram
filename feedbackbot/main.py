@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
@@ -19,13 +20,13 @@ ignore_types = ['audio', 'document', 'photo', 'sticker', 'video',
 
 @bot.message_handler(commands=['start'])
 def command_start(message):
-    buttons_names = {
+    buttons = {
         'about': u'О канале',
         'feedback': u'Отзывы и предложения',
         'advertising': u'Условия рекламы',
         'suggest': u'Предложить новость',
     }
-    keyboard = markup.return_keyboard(**buttons_names)
+    keyboard = markup.return_keyboard(**buttons)
     commands.handle_start(message, keyboard)
 
 
@@ -49,22 +50,22 @@ def command_suggest(message):
     commands.handle_suggest(message)
 
 
-@bot.message_handler(func=lambda message: message.text == 'О канале')
+@bot.message_handler(func=lambda message: message.text == u'О канале')
 def handle_about(message):
     commands.handle_about(message)
 
 
-@bot.message_handler(func=lambda message: message.text == 'Отзывы и предложения')
+@bot.message_handler(func=lambda message: message.text == u'Отзывы и предложения')
 def handle_feedback(message):
     commands.handle_feedback(message)
 
 
-@bot.message_handler(func=lambda message: message.text == 'Условия рекламы')
+@bot.message_handler(func=lambda message: message.text == u'Условия рекламы')
 def handle_advertising(message):
     commands.handle_advertising(message)
 
 
-@bot.message_handler(func=lambda message: message.text == 'Предложить новость')
+@bot.message_handler(func=lambda message: message.text == u'Предложить новость')
 def handle_suggest(message):
     commands.handle_suggest(message)
 
@@ -73,15 +74,15 @@ def handle_suggest(message):
 def handle_message(message):
     user_chat_id = commands.handle_return_user_cid()
     if user_chat_id:
-        text = 'Сообщение отправлено!'
-        button = 'Сброс'
+        text = u'Сообщение отправлено!'
+        button = 'Reset'
         msg_data = commands.handle_serialization_message(message, button)
         inline_button = markup.return_inline_button(button, msg_data)
         commands.handle_admin_message(message, user_chat_id)
         commands.handle_button(text, inline_button)
     else:
-        text = 'Новое сообщение от пользователя ' + str(message.chat.id)
-        button = 'Ответить'
+        text = u'Новое сообщение от пользователя ' + message.chat.first_name
+        button = 'Answer'
         msg_data = commands.handle_serialization_message(message, button)
         inline_button = markup.return_inline_button(button, msg_data)
         commands.handle_message(message)
@@ -97,12 +98,12 @@ def handle_ignore_message(message):
 @bot.callback_query_handler(lambda call: True)
 def handle_callback(call):
     callback = commands.handle_deserialization_message(call.data)
-    if callback['action'] == 'Сброс':
-        text = 'Чат с пользователем ' + callback['name'] + ' сброшен'
+    if callback['action'] == 'Reset':
+        text = u'Чат с пользователем ' + callback['name'] + u' сброшен'
         commands.handle_reset_user_cid()
         commands.handle_action_callback(text)
-    elif callback['action'] == 'Ответить':
-        text = 'Выбран чат с пользователем ' + callback['name']
+    elif callback['action'] == 'Answer':
+        text = u'Выбран чат с пользователем ' + callback['name']
         commands.handle_set_user_cid(callback['cid'])
         commands.handle_action_callback(text)
 
