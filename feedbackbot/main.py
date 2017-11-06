@@ -83,8 +83,10 @@ def handle_message(message):
     if message.chat.id != config.ADMIN_CHAT_ID:
         text = u'Сообщение от ' + message.chat.first_name
         button = 'Answer'
+        user_name = message.chat.first_name
         msg_data = commands.handle_serialization_message(message, button)
-        inline_button = markup.return_inline_button(button, msg_data)
+        inline_button = markup.return_inline_button(button + ' ' + user_name,
+                                                    msg_data)
 
         commands.handle_forward_message(message)
 
@@ -94,7 +96,8 @@ def handle_message(message):
         text = u'Сообщение отправлено!'
         button = 'Reset'
         msg_data = commands.handle_serialization_message(message, button)
-        inline_button = markup.return_inline_button(button, msg_data)
+        inline_button = markup.return_inline_button(button + ' ' + user_name,
+                                                    msg_data)
 
         commands.handle_admin_message(user_chat_id, message)
         commands.handle_button(text, inline_button)
