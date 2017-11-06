@@ -5,14 +5,13 @@
 import telebot
 from telebot import types
 import commands
-import settings
+import config
 import markup
-import json
 
 
-bot = telebot.TeleBot(settings.token)
+bot = telebot.TeleBot(config.TOKEN)
 markup = markup.Markup(types)
-commands = commands.CommandsHandler(bot, settings, json)
+commands = commands.CommandsHandler(bot, config)
 
 ignore_types = ['audio', 'document', 'photo', 'sticker', 'video',
                 'video_note', 'voice', 'location', 'contact']
@@ -79,14 +78,13 @@ def handle_message(message):
         button = 'Reset'
         msg_data = commands.handle_serialization_message(message, button)
         inline_button = markup.return_inline_button(button, msg_data)
-        commands.handle_admin_message(message, user_chat_id)
+        commands.handle_admin_message(user_chat_id, message)
         commands.handle_button(text, inline_button)
     else:
         text = u'Новое сообщение от пользователя ' + message.chat.first_name
         button = 'Answer'
         msg_data = commands.handle_serialization_message(message, button)
         inline_button = markup.return_inline_button(button, msg_data)
-        commands.handle_forward_message(message)
         commands.handle_button(text, inline_button)
 
 

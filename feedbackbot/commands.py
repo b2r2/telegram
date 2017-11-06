@@ -1,16 +1,18 @@
+import json
+
+
 class CommandsHandler():
-    def __init__(self, bot, settings, json):
+    def __init__(self, bot, config):
         self.bot = bot
-        self.settings = settings
+        self.config = config
         self.user_cid = 0
-        self.json = json
 
     def handle_start(self, message, keyboard):
         cid = message.chat.id
 
         msg = (u'Доброго времени суток!\nС помощью меня Вы можете связаться '
                u'с моим создателем и администратором сообщества ' +
-               self.settings.long_link + u'\nДля этого выберете одно из '
+               self.config.LINK + u'\nДля этого выберете одно из '
                u'возможных действий!')
         self.bot.send_message(cid, msg, reply_markup=keyboard)
 
@@ -20,7 +22,7 @@ class CommandsHandler():
         msg = (u'Проект создан для программистов любого уровня.\n'
                u'Здесь Вы всегда можете узнать что-то новое!\n\n'
                u'С помощью меня Вы можете связаться с моим создателем и '
-               u'администратором сообщества ' + self.settings.short_link +
+               u'администратором сообщества ' + self.config.SHORT_LINK +
                u'\nДля этого выберете одно из возможных действий из '
                u'контекстного меню.')
         self.bot.send_message(cid, msg)
@@ -35,7 +37,7 @@ class CommandsHandler():
     def handle_advertising(self, message):
         cid = message.chat.id
 
-        msg = (u'Условия рекламы на канале ' + self.settings.short_link +
+        msg = (u'Условия рекламы на канале ' + self.config.SHORT_LINK +
                u'\n\nОтдельный пост: 1000 рублей, выход поста 14:00\n'
                u'Пост в подборке: 500 рублей, выход поста в 20:00\n\n'
                u'Пост не удаляется из ленты, топ от 5 часов.\n\n'
@@ -56,20 +58,20 @@ class CommandsHandler():
         cid = message.chat.id
         smiley = u'\U0001F609'
         msg = u'Ваше сообщение отправлено!\nСпасибо! ' + smiley
-        if cid == self.settings.target_chat:
+        if cid == self.config.ADMIN_CHAT_ID:
             pass
         else:
             self.bot.send_message(cid, msg)
 
     def handle_forward_message(self, message):
-        self.bot.forward_message(self.settings.target_chat,
+        self.bot.forward_message(self.config.ADMIN_CHAT_ID,
                                  message.chat.id, message.message_id)
 
-    def handle_admin_message(self, message, cid):
+    def handle_admin_message(self, cid, message):
         self.bot.send_message(cid, message.text)
 
     def handle_button(self, text, inline_button):
-        self.bot.send_message(chat_id=self.settings.target_chat,
+        self.bot.send_message(chat_id=self.config.ADMIN_CHAT_ID,
                               text=text,
                               reply_markup=inline_button)
 
@@ -94,7 +96,7 @@ class CommandsHandler():
             'cid': message.chat.id,
             'action': button
         }
-        return self.json.dumps(msg_data)
+        return json.dumps(msg_data)
 
     def handle_deserialization_message(self, callback_data):
-        return self.json.loads(callback_data)
+        return json.loads(callback_data)

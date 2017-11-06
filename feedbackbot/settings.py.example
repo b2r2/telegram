@@ -1,4 +1,0 @@
-token = 'token ID'
-target_chat = 'your_target_chat_ID'
-short_link = '@your_short_channel_link'
-long_link = 'https://your_channel_link'
