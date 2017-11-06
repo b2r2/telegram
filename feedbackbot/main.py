@@ -7,14 +7,32 @@ from telebot import types
 import commands
 import config
 import markup
+import webhook
+import logging
+import cherrypy
 
 
 bot = telebot.TeleBot(config.TOKEN)
+webhook_server = webhook.WebhookServer(bot, types)
 markup = markup.Markup(types)
 commands = commands.CommandsHandler(bot, config)
 
 ignore_types = ['audio', 'document', 'photo', 'sticker', 'video',
                 'video_note', 'voice', 'location', 'contact']
+
+
+WEBHOOK_HOST = config.IP
+WEBHOOK_PORT = 8443
+WEBHOOK_LISTEN = '0.0.0.0'
+
+WEBHOOK_SSL_CERT = './webhook_cert.pem'
+WEBHOOK_SSL_PRIV = './webhook_pkey.pem'
+
+WEBHOOK_URL_BASE = 'https://%s:%s' % (WEBHOOK_HOST, WEBHOOK_PORT)
+WEBHOOK_URL_PATH = '/%s/' % (config.TOKEN)
+
+logger = telebot.logger
+telebot.logger.setLevel(logging.INFO)
 
 
 @bot.message_handler(commands=['start'])
@@ -115,5 +133,23 @@ def handle_callback(call):
                                   show_alert=False, text=text)
 
 
+bot.remove_webhook()
+bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
+                certificate=open(WEBHOOK_SSL_CERT, 'r'))
+
+access_log = cherrypy.log.access_log
+for handler in tuple(access_log.handlers):
+    access_log.removeHandler(handler)
+
+cherrypy.config.update(
+    {
+        'server.socket_host': WEBHOOK_LISTEN,
+        'server.socket_port': WEBHOOK_PORT,
+        'server.ssl_module': 'builtin',
+        'server.ssl_certificate': WEBHOOK_SSL_CERT,
+        'server.ssl_private_key': WEBHOOK_SSL_PRIV
+    }
+)
+
 if __name__ == '__main__':
-    bot.polling(none_stop=True, interval=0)
+    cherrypy.quickstart(webhook_server, WEBHOOK_URL_PATH, {'/': {}})
