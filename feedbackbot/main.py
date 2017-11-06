@@ -69,40 +69,47 @@ def handle_suggest(message):
     commands.handle_suggest(message)
 
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
-def handle_message(message):
-    user_chat_id = commands.handle_return_user_cid()
-    commands.handle_message(message)
-    if user_chat_id:
-        text = u'Сообщение отправлено!'
-        button = 'Reset'
-        msg_data = commands.handle_serialization_message(message, button)
-        inline_button = markup.return_inline_button(button, msg_data)
-        commands.handle_admin_message(user_chat_id, message)
-        commands.handle_button(text, inline_button)
-    else:
-        text = u'Новое сообщение от пользователя ' + message.chat.first_name
-        button = 'Answer'
-        msg_data = commands.handle_serialization_message(message, button)
-        inline_button = markup.return_inline_button(button, msg_data)
-        commands.handle_button(text, inline_button)
-
-
 @bot.message_handler(func=lambda message: True, content_types=ignore_types)
 def handle_ignore_message(message):
     commands.handle_ignore(message)
 
 
-@bot.callback_query_handler(lambda call: True)
+@bot.message_handler(func=lambda message: True, content_types=['text'])
+def handle_message(message):
+    user_chat_id = commands.handle_return_user_cid()
+
+    commands.handle_message(message)
+
+    if message.chat.id != config.ADMIN_CHAT_ID:
+        text = u'Сообщение от ' + message.chat.first_name
+        button = 'Answer'
+        msg_data = commands.handle_serialization_message(message, button)
+        inline_button = markup.return_inline_button(button, msg_data)
+
+        commands.handle_forward_message(message)
+
+        commands.handle_button(text, inline_button)
+
+    if user_chat_id and message.chat.id == config.ADMIN_CHAT_ID:
+        text = u'Сообщение отправлено!'
+        button = 'Reset'
+        msg_data = commands.handle_serialization_message(message, button)
+        inline_button = markup.return_inline_button(button, msg_data)
+
+        commands.handle_admin_message(user_chat_id, message)
+        commands.handle_button(text, inline_button)
+
+
+@bot.callback_query_handler(func=lambda call: call.data)
 def handle_callback(call):
     callback = commands.handle_deserialization_message(call.data)
     if callback['action'] == 'Reset':
-        text = u'Чат с пользователем ' + callback['name'] + u' сброшен'
+        text = u'Чат с ' + callback['name'] + u' сброшен'
         commands.handle_reset_user_cid()
         bot.answer_callback_query(callback_query_id=call.id,
                                   show_alert=False, text=text)
     elif callback['action'] == 'Answer':
-        text = u'Выбран чат с пользователем ' + callback['name']
+        text = u'Пользователь ' + callback['name'] + u' выбран'
         commands.handle_set_user_cid(callback['cid'])
         bot.answer_callback_query(callback_query_id=call.id,
                                   show_alert=False, text=text)

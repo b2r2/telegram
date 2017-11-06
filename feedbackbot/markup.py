@@ -12,7 +12,7 @@ class Markup():
 
     def return_inline_button(self, button, data):
         markup = self.types.InlineKeyboardMarkup()
-        markup.add(self.types.InlineKeyboardButton(button,
-                                                   callback_data=data))
+        callback = self.types.InlineKeyboardButton(button, callback_data=data)
+        markup.add(callback)
 
         return markup

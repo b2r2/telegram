@@ -64,8 +64,9 @@ class CommandsHandler():
             self.bot.send_message(cid, msg)
 
     def handle_forward_message(self, message):
-        self.bot.forward_message(self.config.ADMIN_CHAT_ID,
-                                 message.chat.id, message.message_id)
+        if message.chat.id != self.config.ADMIN_CHAT_ID:
+            self.bot.forward_message(self.config.ADMIN_CHAT_ID,
+                                     message.chat.id, message.message_id)
 
     def handle_admin_message(self, cid, message):
         self.bot.send_message(cid, message.text)
