@@ -2,3 +2,14 @@ TOKEN = 'token ID'
 ADMIN_CHAT_ID = 'your_target_chat_ID'
 SHORT_LINK = '@your_short_channel_link'
 LINK = 'https://your_channel_link'
+IP = 'your IP or server IP'
+ignore_types = ['audio', 'document', 'photo', 'sticker', 'video',
+                'video_note', 'voice', 'location', 'contact']
+buttons_name = {
+    'name': 'description',
+}
+info = {
+    'command name': (
+        'text'
+    ),
+}
