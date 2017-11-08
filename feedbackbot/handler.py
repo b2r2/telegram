@@ -85,9 +85,6 @@ class MessageHandler():
     def reset_user_chat_id(self):
         self.user_chat_id = 0
 
-    def return_user_chat_id(self):
-        return self.user_chat_id
-
     def encode_message(self, message, button):
         message_data = {
             'user_name': message.chat.first_name,
