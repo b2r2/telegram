@@ -1,18 +1,20 @@
-class Markup():
-    """ This method sets keyboard markup """
-    def __init__(self, types):
-        self.types = types
+from telebot import types
 
-    def return_keyboard(self, **buttons):
-        markup = self.types.ReplyKeyboardMarkup(True, True, row_width=2)
+
+class KeyboardMarkupFactory():
+    """ This method sets keyboard markup """
+
+    def create_keyboard(self, **buttons):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
+                                           one_time_keyboard=True, row_width=2)
         markup.add(buttons['about'], buttons['feedback'])
         markup.add(buttons['advertising'], buttons['suggest'])
 
         return markup
 
-    def return_inline_button(self, button, data):
-        markup = self.types.InlineKeyboardMarkup()
-        callback = self.types.InlineKeyboardButton(button, callback_data=data)
+    def create_inline_button(self, button, data):
+        markup = types.InlineKeyboardMarkup()
+        callback = types.InlineKeyboardButton(button, callback_data=data)
         markup.add(callback)
 
         return markup
