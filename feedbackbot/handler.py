@@ -53,9 +53,10 @@ class MessageHandler():
                                      message.chat.id, message.message_id)
 
     def choose_message(self, message):
-        if message.chat.id != config.ADMIN_CHAT_ID:
+        is_admin = message.chat.id == config.ADMIN_CHAT_ID
+        if not is_admin:
             self.get_user_message(message)
-        if self.user_chat_id and message.chat.id == config.ADMIN_CHAT_ID:
+        elif self.user_chat_id > 0:
             self.send_admin_message(message)
 
     def send_admin_message(self, message):
@@ -86,20 +87,25 @@ class MessageHandler():
 
     def parse_action_inline_button(self, call, message_data):
         message_text = self.get_formatted_text(message_data)
+        action = message_data['action']
 
-        if message_data['action'] == 'Reset':
+        if action == 'Reset':
             self.reset_user_chat_id
-        elif message_data['action'] == 'Answer':
+        elif action == 'Answer':
             self.set_user_chat_id(message_data['user_name'])
 
         return message_text
 
     def get_formatted_text(self, message_data):
-        text = {
-            'Reset': 'Чат с {} сброшен'.format(message_data['user_name']),
-            'Answer': 'Чат с {} выбран'.format(message_data['user_name']),
+        user_name = message_data['user_name']
+        action = message_data['action']
+        action_to_state = {
+            'Reset': 'сброшен',
+            'Answer': 'выбран',
         }
-        return text[message_data['action']]
+        chat_state = action_to_state[action]
+        text = 'Чат с {} {}'.format(user_name, chat_state)
+        return text
 
     def set_user_chat_id(self, user_chat_id):
         self.user_chat_id = user_chat_id

@@ -4,14 +4,14 @@
 
 import telebot
 import handler
-from config import TOKEN, IGNORE_TYPES
+from config import TOKEN, CONTENT_IGNORE_TYPES
 import logging
 
 
 bot = telebot.AsyncTeleBot(TOKEN)
 handler = handler.MessageHandler(bot)
 
-ignore_types = IGNORE_TYPES
+ignore_types = CONTENT_IGNORE_TYPES
 
 task = bot.get_me()
 
@@ -61,7 +61,6 @@ def handle_callback(call):
     handler.answer_callback_query(call, message_data)
 
 
-result = task.wait()
-
 if __name__ == '__main__':
+    result = task.wait()
     bot.polling(none_stop=True, interval=0)
