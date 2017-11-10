@@ -8,10 +8,12 @@ from config import TOKEN, IGNORE_TYPES
 import logging
 
 
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.AsyncTeleBot(TOKEN)
 handler = handler.MessageHandler(bot)
 
 ignore_types = IGNORE_TYPES
+
+task = bot.get_me()
 
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
@@ -58,6 +60,8 @@ def handle_callback(call):
     message_data = handler.decode_message(call.data)
     handler.answer_callback_query(call, message_data)
 
+
+result = task.wait()
 
 if __name__ == '__main__':
     bot.polling(none_stop=True, interval=0)
