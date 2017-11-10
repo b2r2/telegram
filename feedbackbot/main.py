@@ -12,7 +12,7 @@ from config import TOKEN, IGNORE_TYPES, IP
 
 bot = telebot.TeleBot(TOKEN)
 handler = handler.MessageHandler(bot)
-webhook_server = webhook.WebhookServer(bot, telebot.types)
+webhook_server = webhook.WebhookServer(bot)
 
 ignore_types = IGNORE_TYPES
 

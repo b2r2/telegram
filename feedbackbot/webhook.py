@@ -1,10 +1,10 @@
 import cherrypy
+from telebot import types
 
 
 class WebhookServer(object):
-    def __init__(self, bot, types):
+    def __init__(self, bot):
         self.bot = bot
-        self.types = types
 
     @cherrypy.expose
     def index(self):
@@ -13,7 +13,7 @@ class WebhookServer(object):
                 cherrypy.request.headers['content-type'] == 'application/json':
             length = int(cherrypy.request.headers['content-length'])
             json_string = cherrypy.request.body.read(length).decode('utf-8')
-            update = self.types.Update.de_json(json_string)
+            update = types.Update.de_json(json_string)
             self.bot.process_new_updates([update])
             return ''
         else:
