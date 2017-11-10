@@ -50,13 +50,13 @@ def invalid_message(message):
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def send_message(message):
     handler.send_default_message(message)
-    handler.parse_user_message(message)
+    handler.choose_message(message)
 
 
 @bot.callback_query_handler(func=lambda call: len(call.data) > 0)
 def handle_callback(call):
     message_data = handler.decode_message(call.data)
-    handler.send_action_inline_button_message(call, message_data)
+    handler.answer_callback_query(call, message_data)
 
 
 if __name__ == '__main__':
