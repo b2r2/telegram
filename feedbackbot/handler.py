@@ -17,8 +17,7 @@ class MessageHandler():
                               reply_markup=keyboard)
 
     def send_about(self, message):
-        self.bot.send_message(message.chat.id,
-                              config.INFO['about'])
+            self.bot.send_message(message.chat.id, config.INFO['about'])
 
     def send_feedback(self, message):
         self.bot.send_message(message.chat.id,

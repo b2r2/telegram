@@ -5,12 +5,16 @@
 import telebot
 import handler
 from config import TOKEN, IGNORE_TYPES
+import logging
 
 
 bot = telebot.TeleBot(TOKEN)
 handler = handler.MessageHandler(bot)
 
 ignore_types = IGNORE_TYPES
+
+logger = telebot.logger
+telebot.logger.setLevel(logging.INFO)
 
 
 @bot.message_handler(func=lambda message: message.text == '/start')
@@ -40,7 +44,7 @@ def message_suggest(message):
 
 @bot.message_handler(func=lambda message: True, content_types=ignore_types)
 def invalid_message(message):
-    handler.ignore(message)
+    handler.send_ignore(message)
 
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
