@@ -6,7 +6,8 @@ class KeyboardMarkupFactory():
 
     def create_keyboard(self, **buttons):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
-                                           one_time_keyboard=True, row_width=2)
+                                           one_time_keyboard=True,
+                                           row_width=2)
         markup.add(buttons['about'], buttons['feedback'])
         markup.add(buttons['advertising'], buttons['suggest'])
 
@@ -14,7 +15,7 @@ class KeyboardMarkupFactory():
 
     def create_inline_button(self, button, data):
         markup = types.InlineKeyboardMarkup()
-        callback = types.InlineKeyboardButton(button, callback_data=data)
+        callback = types.InlineKeyboardButton(text=button, callback_data=data)
         markup.add(callback)
 
         return markup

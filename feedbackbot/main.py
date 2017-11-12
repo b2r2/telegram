@@ -7,15 +7,19 @@ import webhook
 import logging
 import cherrypy
 import handler
-from config import TOKEN, IGNORE_TYPES, IP
+from config import TOKEN, IP, CONTENT_IGNORE_TYPES
 
 
-bot = telebot.TeleBot(TOKEN)
+ignore_types = CONTENT_IGNORE_TYPES
+
+bot = telebot.AsyncTeleBot(TOKEN)
 handler = handler.MessageHandler(bot)
 webhook_server = webhook.WebhookServer(bot)
 
-ignore_types = IGNORE_TYPES
+task = bot.get_me()
 
+logger = telebot.logger
+telebot.logger.setLevel(logging.INFO)
 
 WEBHOOK_HOST = IP
 WEBHOOK_PORT = 8443
@@ -27,13 +31,30 @@ WEBHOOK_SSL_PRIV = './webhook_pkey.pem'
 WEBHOOK_URL_BASE = 'https://%s:%s' % (WEBHOOK_HOST, WEBHOOK_PORT)
 WEBHOOK_URL_PATH = '/%s/' % (TOKEN)
 
-logger = telebot.logger
-telebot.logger.setLevel(logging.INFO)
 
-
-@bot.message_handler(func=lambda message: message.text == '/start')
-def message_start(message):
+@bot.message_handler(commands=['start'])
+def command_start(message):
     handler.send_start(message)
+
+
+@bot.message_handler(commands=['about'])
+def command_about(message):
+    handler.send_about(message)
+
+
+@bot.message_handler(commands=['feedback'])
+def command_feedback(message):
+    handler.send_feedback(message)
+
+
+@bot.message_handler(commands=['advertising'])
+def command_advertising(message):
+    handler.send_advertising(message)
+
+
+@bot.message_handler(commands=['suggest'])
+def command_suggest(message):
+    handler.send_suggest(message)
 
 
 @bot.message_handler(func=lambda message: message.text == u'О канале')
@@ -58,19 +79,19 @@ def message_suggest(message):
 
 @bot.message_handler(func=lambda message: True, content_types=ignore_types)
 def invalid_message(message):
-    handler.ignore(message)
+    handler.send_ignore(message)
 
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def send_message(message):
     handler.send_default_message(message)
-    handler.parse_user_message(message)
+    handler.choose_message(message)
 
 
 @bot.callback_query_handler(func=lambda call: len(call.data) > 0)
 def handle_callback(call):
     message_data = handler.decode_message(call.data)
-    handler.send_action_inline_button_message(call, message_data)
+    handler.answer_callback_query(call, message_data)
 
 
 bot.remove_webhook()
