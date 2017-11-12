@@ -8,8 +8,13 @@ class KeyboardMarkupFactory():
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
                                            one_time_keyboard=True,
                                            row_width=2)
-        markup.add(buttons['about'], buttons['feedback'])
-        markup.add(buttons['advertising'], buttons['suggest'])
+        about = types.KeyboardButton(buttons['about'])
+        feedback = types.KeyboardButton(buttons['feedback'])
+        advertising = types.KeyboardButton(buttons['advertising'])
+        suggest = types.KeyboardButton(buttons['suggest'])
+
+        markup.add(about, feedback)
+        markup.add(advertising, suggest)
 
         return markup
 
