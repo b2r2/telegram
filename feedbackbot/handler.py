@@ -92,7 +92,7 @@ class MessageHandler():
         if action == 'Reset':
             self.reset_user_chat_id
         elif action == 'Answer':
-            self.set_user_chat_id(message_data['user_name'])
+            self.set_user_chat_id(message_data['cid'])
 
         return message_text
 
