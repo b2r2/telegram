@@ -8,10 +8,10 @@ from config import TOKEN, CONTENT_IGNORE_TYPES
 import logging
 
 
+ignore_types = CONTENT_IGNORE_TYPES
+
 bot = telebot.AsyncTeleBot(TOKEN)
 handler = handler.MessageHandler(bot)
-
-ignore_types = CONTENT_IGNORE_TYPES
 
 task = bot.get_me()
 
@@ -19,9 +19,29 @@ logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
 
 
-@bot.message_handler(func=lambda message: message.text == '/start')
-def message_start(message):
+@bot.message_handler(commands=['start'])
+def command_start(message):
     handler.send_start(message)
+
+
+@bot.message_handler(commands=['about'])
+def command_about(message):
+    handler.send_about(message)
+
+
+@bot.message_handler(commands=['feedback'])
+def command_feedback(message):
+    handler.send_feedback(message)
+
+
+@bot.message_handler(commands=['advertising'])
+def command_advertising(message):
+    handler.send_advertising(message)
+
+
+@bot.message_handler(commands=['suggest'])
+def command_suggest(message):
+    handler.send_suggest(message)
 
 
 @bot.message_handler(func=lambda message: message.text == u'О канале')
