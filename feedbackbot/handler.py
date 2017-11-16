@@ -68,7 +68,7 @@ class MessageHandler():
         action = message_data['action']
 
         if action == 'Reset':
-            self.reset_user_chat_id
+            self.reset_user_chat_id()
         elif action == 'Answer':
             self.set_user_chat_id(message_data['cid'])
 
