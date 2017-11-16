@@ -7,6 +7,7 @@ import handler
 from config import TOKEN, CONTENT_IGNORE_TYPES
 import logging
 import commands
+import utils
 
 
 ignore_types = CONTENT_IGNORE_TYPES
@@ -64,7 +65,7 @@ def send_message(message):
 
 @bot.callback_query_handler(func=lambda call: len(call.data) > 0)
 def handle_callback(call):
-    message_data = handler.decode_message(call.data)
+    message_data = utils.decode_message(call.data)
     handler.answer_callback_query(call, message_data)
 
 

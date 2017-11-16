@@ -1,6 +1,6 @@
-import json
 import markup
 import config
+import utils
 
 
 class MessageHandler():
@@ -40,7 +40,7 @@ class MessageHandler():
     def send_admin_message(self, message):
         message_text = 'Сообщение отправлено!'
         button_name = 'Reset'
-        data = self.encode_message(message, button_name)
+        data = utils.encode_message(message, button_name)
 
         inline_button = self.markup.create_inline_button(button_name, data)
         self.send_button(message_text, inline_button)
@@ -51,7 +51,7 @@ class MessageHandler():
         button_name = 'Answer'
         button_text = ' '.join([button_name, user_name])
         message_text = 'Сообщение от {}'.format(user_name)
-        data = self.encode_message(message, button_name)
+        data = utils.encode_message(message, button_name)
 
         inline_button = self.markup.create_inline_button(button_text, data)
         self.send_button(message_text, inline_button)
@@ -64,7 +64,7 @@ class MessageHandler():
                                        text=message_text)
 
     def parse_action_inline_button(self, call, message_data):
-        message_text = self.get_formatted_text(message_data)
+        message_text = utils.get_formatted_text(message_data)
         action = message_data['action']
 
         if action == 'Reset':
@@ -74,30 +74,8 @@ class MessageHandler():
 
         return message_text
 
-    def get_formatted_text(self, message_data):
-        user_name = message_data['user_name']
-        action = message_data['action']
-        action_to_state = {
-            'Reset': 'сброшен',
-            'Answer': 'выбран',
-        }
-        chat_state = action_to_state[action]
-        text = 'Чат с {} {}'.format(user_name, chat_state)
-        return text
-
     def set_user_chat_id(self, user_chat_id):
         self.user_chat_id = user_chat_id
 
     def reset_user_chat_id(self):
         self.user_chat_id = 0
-
-    def encode_message(self, message, button):
-        message_data = {
-            'user_name': message.chat.first_name,
-            'cid': message.chat.id,
-            'action': button,
-        }
-        return json.dumps(message_data)
-
-    def decode_message(self, message_data):
-        return json.loads(message_data)
