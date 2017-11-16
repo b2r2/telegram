@@ -9,28 +9,6 @@ class MessageHandler():
         self.markup = markup.KeyboardMarkupFactory()
         self.user_chat_id = 0
 
-    def send_start(self, message):
-        buttons = config.BUTTON_NAMES
-        keyboard = self.markup.create_keyboard(**buttons)
-        self.bot.send_message(message.chat.id,
-                              config.INFO['start'],
-                              reply_markup=keyboard)
-
-    def send_about(self, message):
-            self.bot.send_message(message.chat.id, config.INFO['about'])
-
-    def send_feedback(self, message):
-        self.bot.send_message(message.chat.id,
-                              config.INFO['feedback'])
-
-    def send_advertising(self, message):
-        self.bot.send_message(message.chat.id,
-                              config.INFO['advertising'])
-
-    def send_suggest(self, message):
-        self.bot.send_message(message.chat.id,
-                              config.INFO['suggest'])
-
     def send_ignore(self, message):
         smiley = u'\U0001F609'
         msg = u'Извините, но я различаю только текст и смайлики ' + smiley
