@@ -38,40 +38,24 @@ def command_start(message):
 
 
 @bot.message_handler(commands=['about'])
-def command_about(message):
-    handler.send_about(message)
-
-
-@bot.message_handler(commands=['feedback'])
-def command_feedback(message):
-    handler.send_feedback(message)
-
-
-@bot.message_handler(commands=['advertising'])
-def command_advertising(message):
-    handler.send_advertising(message)
-
-
-@bot.message_handler(commands=['suggest'])
-def command_suggest(message):
-    handler.send_suggest(message)
-
-
 @bot.message_handler(func=lambda message: message.text == u'О канале')
 def message_about(message):
     handler.send_about(message)
 
 
+@bot.message_handler(commands=['feedback'])
 @bot.message_handler(func=lambda message: message.text == u'Отзывы и предложения')
 def message_feedback(message):
     handler.send_feedback(message)
 
 
+@bot.message_handler(commands=['advertising'])
 @bot.message_handler(func=lambda message: message.text == u'Условия рекламы')
 def message_advertising(message):
     handler.send_advertising(message)
 
 
+@bot.message_handler(commands=['suggest'])
 @bot.message_handler(func=lambda message: message.text == u'Предложить новость')
 def message_suggest(message):
     handler.send_suggest(message)
