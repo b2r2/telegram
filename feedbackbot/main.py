@@ -4,10 +4,9 @@
 
 import telebot
 import handler
-from config import TOKEN, CONTENT_IGNORE_TYPES
+from config import TOKEN, CONTENT_IGNORE_TYPES, ADMIN_CHAT_ID
 import logging
 import commands
-import utils
 
 
 ignore_types = CONTENT_IGNORE_TYPES
@@ -57,16 +56,22 @@ def invalid_message(message):
     handler.send_ignore(message)
 
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
-def send_message(message):
+@bot.message_handler(func=lambda message: message.chat.id != ADMIN_CHAT_ID,
+                     content_types=['text'])
+def receive_message(message):
     handler.send_default_message(message)
-    handler.choose_message(message)
+    handler.get_user_message(message)
+
+
+@bot.message_handler(func=lambda message: message.chat.id == ADMIN_CHAT_ID,
+                     content_types=['text'])
+def send_message(message):
+    handler.send_admin_message(message)
 
 
 @bot.callback_query_handler(func=lambda call: len(call.data) > 0)
 def handle_callback(call):
-    message_data = utils.decode_message(call.data)
-    handler.answer_callback_query(call, message_data)
+    handler.answer_callback_query(call)
 
 
 if __name__ == '__main__':

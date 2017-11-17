@@ -1,29 +1,31 @@
 import json
 
 
-def encode_message(message, button):  # !!!
-    message_data = {
-        'cid': message.chat.id,
-        'action': button,
-        'user_name': message.chat.first_name,
-    }
-    return json.dumps(message_data)
+class SupportData():
+    def __init__(self):
+        self.data = {}
 
+    def encode_data(self, message, button):
+        self.data = {
+            'cid': message.chat.id,
+            'action': button,
+            'user_name': message.chat.first_name,
+        }
+        return json.dumps(self.data)
 
-def decode_message(data):
-    return json.loads(data)
+    def get_data(self):
+        return self.data
 
+    def get_formatted_text(self):
+        user_name = self.data['user_name']
+        action = self.data['action']
+        text = {
+            'Reset': 'Чат сброшен',
+            'Answer': 'Чат c {} выбран'.format(user_name),
+        }
+        if action == 'Reset':
+            self.data = {}
+        return text[action]
 
-def get_formatted_text(data):
-    user_name = data['user_name']
-    action = data['action']
-    action_to_state = {
-        'Reset': 'сброшен',
-        'Answer': 'выбран',
-    }
-    chat_state = action_to_state[action]
-    if len(user_name) > 0:
-        text = 'Чат с {} {}'.format(user_name, chat_state)
-    else:
-        text = 'Чат {}'.format(chat_state)
-    return text
+    def get_text_inline_button(self):
+        return self.get_formatted_text()
