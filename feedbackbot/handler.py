@@ -26,10 +26,6 @@ class MessageHandler():
                               text=text,
                               reply_markup=inline_button)
 
-    def forward_message(self, message):
-        self.bot.forward_message(ADMIN_CHAT_ID,
-                                 message.chat.id, message.message_id)
-
     def send_admin_message(self, message):
         message_text = 'Сообщение отправлено!'
         button_name = 'Reset'
@@ -49,7 +45,8 @@ class MessageHandler():
 
         inline_button = self.markup.create_inline_button(button_text, data)
         self.send_button(message_text, inline_button)
-        self.forward_message(message)
+        self.bot.forward_message(ADMIN_CHAT_ID,
+                                 message.chat.id, message.message_id)
 
     def answer_callback_query(self, call):
         text = self.support_data.get_text_inline_button()
