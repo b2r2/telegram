@@ -27,9 +27,8 @@ class MessageHandler():
                               reply_markup=inline_button)
 
     def forward_message(self, message):
-        if message.chat.id != ADMIN_CHAT_ID:
-            self.bot.forward_message(ADMIN_CHAT_ID,
-                                     message.chat.id, message.message_id)
+        self.bot.forward_message(ADMIN_CHAT_ID,
+                                 message.chat.id, message.message_id)
 
     def send_admin_message(self, message):
         message_text = 'Сообщение отправлено!'
