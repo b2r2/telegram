@@ -16,7 +16,7 @@ class Handler():
         keyboard = self.markup.create_keyboard(**config.BUTTON_NAMES)
         self.msg.send_start(message.chat.id,
                             keyboard,
-                            INFO['start'])
+                            config.INFO['start'])
 
     def send_about(self, message):
         self.msg.send_command_message(message.chat.id,
