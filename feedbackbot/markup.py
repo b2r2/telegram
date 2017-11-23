@@ -18,9 +18,18 @@ class KeyboardMarkupFactory():
 
         return markup
 
-    def create_inline_button(self, button, data):
+    def create_callback_inline_button(self, button, data):
         markup = types.InlineKeyboardMarkup()
-        callback = types.InlineKeyboardButton(text=button, callback_data=data)
+        callback = types.InlineKeyboardButton(text=button,
+                                              callback_data=data)
         markup.add(callback)
+
+        return markup
+
+    def create_url_inline_button(self, button, url):
+        markup = types.InlineKeyboardMarkup()
+        url = types.InlineKeyboardButton(text=button,
+                                         url=url)
+        markup.add(url)
 
         return markup
