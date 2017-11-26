@@ -80,8 +80,8 @@ bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
                 certificate=open(WEBHOOK_SSL_CERT, 'r'))
 
 access_log = cherrypy.log.access_log
-for handler in tuple(access_log.handlers):
-    access_log.removeHandler(handler)
+for log_handler in tuple(access_log.handlers):
+    access_log.removeHandler(log_handler)
 
 cherrypy.config.update(
     {
