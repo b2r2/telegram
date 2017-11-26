@@ -20,7 +20,7 @@ class SupportData():
     def get_data(self):
         return self.data
 
-    def get_formatted_text(self):
+    def get_formatted_admin_action_button_text(self):
         user_name = self.data['user_name']
         action = self.data['action']
         text = {
@@ -34,5 +34,13 @@ class SupportData():
     def clear_data(self):
         self.data.clear()
 
-    def get_text_inline_button(self):
-        return self.get_formatted_text()
+    def get_callback_button_text(self):
+        action = self.data['action']
+        user_name = self.data['user_name']
+        action_to_state = {
+            'Answer': 'от {}',
+            'Reset': '{} отправлено',
+        }
+        chat_state = action_to_state[action].format(user_name)
+        text = 'Сообщение {}'.format(chat_state)
+        return text
