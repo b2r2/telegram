@@ -54,28 +54,23 @@ class Handler():
         self.support_data.set_data([message.chat.id,
                                     message.chat.first_name])
         inline_button = self.make_callback_button('Answer')
-        text = 'New message from {}'.format(message.chat.first_name)
         self.msg.forward_message(config.ADMIN_CHAT_ID,
                                  message)
-        self.msg.send_callback_inline_button(message.chat.first_name,
-                                             text,
-                                             inline_button)
+        self.prepare_callback_button_text(inline_button)
 
     def handle_admin_message(self, message):
         user_data = self.support_data.get_data()
         if user_data['user_name']:
             inline_button = self.make_callback_button('Reset')
-            text = 'Message send to the {}'.format(user_data['user_name'])
+            user_data = self.support_data.get_data()
             self.msg.send_user_message(user_data['cid'],
                                        message.text)
-            self.send_callback_button(user_data['user_name'],
-                                      text,
-                                      inline_button)
+            self.prepare_callback_button_text(inline_button)
         else:
             self.msg.send_user_message(config.ADMIN_CHAT_ID,
                                        text.EMPTY)
 
-    def send_callback_button(self, user_name, button):
+    def prepare_callback_button_text(self, button):
         user_data = self.support_data.get_data()
         action = user_data['action']
         user_name = user_data['user_name']
