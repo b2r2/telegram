@@ -53,16 +53,16 @@ class Handler():
     def handle_user_message(self, message):
         self.support_data.set_data([message.chat.id,
                                     message.chat.first_name])
-        inline_button = self.make_button('Answer')
+        inline_button = self.make_callback_button('Answer')
         self.msg.forward_message(config.ADMIN_CHAT_ID,
                                  message)
-        self.send_button(message.chat.first_name,
-                         inline_button)
+        self.msg.send_callback_inline_button(message.chat.first_name,
+                                             inline_button)
 
     def handle_admin_message(self, message):
         data = self.support_data.get_data()
         if data['user_name']:
-            inline_button = self.make_button('Reset')
+            inline_button = self.make_callback_button('Reset')
             user_data = self.support_data.get_data()
             self.msg.send_user_message(user_data['cid'],
                                        message.text)
