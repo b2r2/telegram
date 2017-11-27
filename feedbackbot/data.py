@@ -20,7 +20,7 @@ class SupportData():
     def get_data(self):
         return self.data
 
-    def get_formatted_admin_action_button_text(self):
+    def get_admin_action_button_text(self):
         user_name = self.data['user_name']
         action = self.data['action']
         text = {

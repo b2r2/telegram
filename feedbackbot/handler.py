@@ -8,7 +8,7 @@ import sender
 class Handler():
     def __init__(self, bot):
         self.bot = bot
-        self.sender = sender.Message(bot)
+        self.sender = sender.SenderMessage(bot)
         self.markup = markup.KeyboardMarkupFactory()
         self.data = data.SupportData()
 
@@ -45,14 +45,15 @@ class Handler():
         self.sender.publish_message(message.chat.id,
                                     text.DEFAULT)
 
-    def answer_callback_query(self, call):
+    def processing_callback_request(self, call):
         try:
-            text = self.data.get_formatted_admin_action_button_text()
-        except Exception as e:
-            print(e)
+            text = self.data.get_admin_action_button_text()
+        except Exception:
+            self.sender.publish_message(config.ADMIN_CHAT_ID,
+                                        'No user data')
         else:
-            self.sender.answer_callback_query(call,
-                                              text)
+            self.sender.publish_answer_callback_query(call,
+                                                      text)
 
     def handle_user_message(self, message):
         self.data.set_data([message.chat.id,
@@ -64,7 +65,8 @@ class Handler():
 
     def handle_admin_message(self, message):
         user_data = self.data.get_data()
-        if user_data['user_name']:
+        user_name = user_data['user_name']
+        if user_name is not None and len(user_name) > 0:
             inline_button = self.make_callback_button('Reset')
             self.sender.publish_message(user_data['cid'],
                                         message.text)

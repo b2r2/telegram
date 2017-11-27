@@ -1,4 +1,4 @@
-class Message():
+class SenderMessage():
     def __init__(self, bot):
         self.bot = bot
 
@@ -30,7 +30,7 @@ class Message():
                                  from_chat_id=message.chat.id,
                                  message_id=message.message_id)
 
-    def answer_callback_query(self, data, text):
+    def publish_answer_callback_query(self, data, text):
         self.bot.answer_callback_query(callback_query_id=data.id,
                                        text=text,
                                        show_alert=False)

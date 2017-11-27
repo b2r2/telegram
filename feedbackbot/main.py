@@ -69,7 +69,7 @@ def send_message(message):
 
 @bot.callback_query_handler(func=lambda call: len(call.data) > 0)
 def handle_callback(call):
-    handler.answer_callback_query(call)
+    handler.processing_callback_request(call)
 
 
 if __name__ == '__main__':
