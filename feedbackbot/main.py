@@ -11,10 +11,7 @@ import logging
 ignore_types = CONTENT_IGNORE_TYPES
 
 bot = telebot.AsyncTeleBot(TOKEN)
-handler = handler.Handler(bot)
-
-
-task = bot.get_me()
+handler = handler.MessageHandler(bot)
 
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
@@ -73,5 +70,4 @@ def handle_callback(call):
 
 
 if __name__ == '__main__':
-    result = task.wait()
     bot.polling(none_stop=True, interval=0)

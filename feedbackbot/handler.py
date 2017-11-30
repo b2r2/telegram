@@ -5,12 +5,12 @@ import markup
 import sender
 
 
-class Handler():
+class MessageHandler():
     def __init__(self, bot):
         self.bot = bot
         self.sender = sender.SenderMessage(bot)
         self.markup = markup.KeyboardMarkupFactory()
-        self.data = data.SupportData()
+        self.data = data.DataHandler()
 
     def send_start(self, message):
         keyboard = self.markup.create_keyboard(**config.BUTTON_NAMES)
