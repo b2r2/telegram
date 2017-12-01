@@ -6,7 +6,7 @@ class KeyboardMarkupFactory():
 
     def create_keyboard(self, **buttons):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
-                                           one_time_keyboard=True,
+                                           one_time_keyboard=False,
                                            row_width=2)
         about = types.KeyboardButton(buttons['about'])
         feedback = types.KeyboardButton(buttons['feedback'])
