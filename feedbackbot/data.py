@@ -8,6 +8,9 @@ class UserDataHandler():
     def encode_data(self):
         return json.dumps(self.data)
 
+    def decode_data(self, call):
+        return json.loads(call.data)
+
     def set_data(self, user_data):
         self.data = {
             'cid': user_data[0],
@@ -20,12 +23,14 @@ class UserDataHandler():
     def get_data(self):
         return self.data
 
-    def get_admin_action_button_text(self):
-        user_name = self.data['user_name']
-        action = self.data['action']
+    def get_admin_action_button_text(self, call):
+        user_data = self.decode_data(call)
+        self.data = user_data
+        name = user_data['user_name']
+        action = user_data['action']
         text = {
             'Reset': 'Чат сброшен',
-            'Answer': 'Чат c {} выбран'.format(user_name),
+            'Answer': 'Чат c {} выбран'.format(name),
         }
         if action == 'Reset':
             self.clear_data()

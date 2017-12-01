@@ -47,10 +47,10 @@ class MessageHandler():
 
     def processing_callback_request(self, call):
         try:
-            text = self.data.get_admin_action_button_text()
+            text = self.data.get_admin_action_button_text(call)
         except Exception:
             self.sender.publish_message(config.ADMIN_CHAT_ID,
-                                        'No user data')
+                                        "No user data")
         else:
             self.sender.publish_answer_callback_query(call,
                                                       text)
@@ -66,6 +66,7 @@ class MessageHandler():
     def handle_admin_message(self, message):
         user_data = self.data.get_data()
         user_name = user_data['user_name']
+        print('user_NAME: ', user_name)
         if user_name is not None and len(user_name) > 0:
             inline_button = self.make_callback_button('Reset')
             self.sender.publish_message(user_data['cid'],
