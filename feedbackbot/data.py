@@ -23,18 +23,21 @@ class UserDataHandler():
     def get_data(self):
         return self.data
 
-    def get_admin_action_button_text(self, call):
-        user_data = self.decode_data(call)
-        self.data = user_data
-        name = user_data['user_name']
-        action = user_data['action']
+    def get_admin_action_callback_text(self, call):
+        name = self.data['user_name']
+        action = self.data['action']
         text = {
             'Reset': 'Чат сброшен',
             'Answer': 'Чат c {} выбран'.format(name),
         }
-        if action == 'Reset':
-            self.clear_data()
         return text[action]
+
+    def upgrade_data(self, call):
+        self.data = self.decode_data(call)
+
+    def check_admin_action(self):
+        if self.data['action'] in 'Reset':
+            self.clear_data()
 
     def clear_data(self):
         self.data.clear()

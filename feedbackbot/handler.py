@@ -47,13 +47,15 @@ class MessageHandler():
 
     def processing_callback_request(self, call):
         try:
-            text = self.data.get_admin_action_button_text(call)
+            self.data.upgrade_data(call)
+            text = self.data.get_admin_action_callback_text(call)
         except Exception:
             self.sender.publish_message(config.ADMIN_CHAT_ID,
                                         text.MISTAKE)
         else:
             self.sender.publish_answer_callback_query(call,
                                                       text)
+            self.data.check_admin_action()
 
     def handle_user_message(self, message):
         self.data.set_data([message.chat.id,
