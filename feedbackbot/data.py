@@ -1,7 +1,7 @@
 import json
 
 
-class DataHandler():
+class UserDataHandler():
     def __init__(self):
         self.data = dict.fromkeys(['cid', 'user_name', 'action'])
 

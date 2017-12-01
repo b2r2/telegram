@@ -10,7 +10,7 @@ class MessageHandler():
         self.bot = bot
         self.sender = sender.SenderMessage(bot)
         self.markup = markup.KeyboardMarkupFactory()
-        self.data = data.DataHandler()
+        self.data = data.UserDataHandler()
 
     def send_start(self, message):
         keyboard = self.markup.create_keyboard(**config.BUTTON_NAMES)
