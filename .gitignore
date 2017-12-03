@@ -3,6 +3,7 @@ settings.py
 config.py
 path.py
 text.py
+setup.py
 *.swo
 *.swp
 *.swn

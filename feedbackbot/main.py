@@ -1,24 +1,19 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
+import cherrypy
+import logging
+import setup
 import telebot
 import webhook
 import handler
-import logging
-import cherrypy
-from config import TOKEN, CONTENT_IGNORE_TYPES, ADMIN_CHAT_ID, \
-    WEBHOOK_PORT, WEBHOOK_LISTEN, WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV,\
-    WEBHOOK_URL_BASE, WEBHOOK_URL_PATH
+from config import TOKEN, IGNORE_TYPES, ADMIN_CHAT_ID
 
 
 bot = telebot.AsyncTeleBot(TOKEN)
+handler = handler.MessageHandler(bot)
+
 webhook_server = webhook.WebhookServer(bot)
-handler = handler.Handler(bot)
-
-
-task = bot.get_me()
-
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
 
@@ -52,7 +47,7 @@ def command_suggest(message):
     handler.send_suggest(message)
 
 
-@bot.message_handler(func=lambda message: True, content_types=CONTENT_IGNORE_TYPES)
+@bot.message_handler(func=lambda message: True, content_types=IGNORE_TYPES)
 def invalid_message(message):
     handler.send_ignore(message)
 
@@ -72,12 +67,12 @@ def send_message(message):
 
 @bot.callback_query_handler(func=lambda call: len(call.data) > 0)
 def handle_callback(call):
-    handler.answer_callback_query(call)
+    handler.processing_callback_request(call)
 
 
 bot.remove_webhook()
-bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
-                certificate=open(WEBHOOK_SSL_CERT, 'r'))
+bot.set_webhook(url=setup.WEBHOOK_URL_BASE+setup.WEBHOOK_URL_PATH,
+                certificate=open(setup.WEBHOOK_SSL_CERT, 'r'))
 
 access_log = cherrypy.log.access_log
 for log_handler in tuple(access_log.handlers):
@@ -85,13 +80,13 @@ for log_handler in tuple(access_log.handlers):
 
 cherrypy.config.update(
     {
-        'server.socket_host': WEBHOOK_LISTEN,
-        'server.socket_port': WEBHOOK_PORT,
+        'server.socket_host': setup.WEBHOOK_LISTEN,
+        'server.socket_port': setup.WEBHOOK_PORT,
         'server.ssl_module': 'builtin',
-        'server.ssl_certificate': WEBHOOK_SSL_CERT,
-        'server.ssl_private_key': WEBHOOK_SSL_PRIV
+        'server.ssl_certificate': setup.WEBHOOK_SSL_CERT,
+        'server.ssl_private_key': setup.WEBHOOK_SSL_PRIV
     }
 )
 
 if __name__ == '__main__':
-    cherrypy.quickstart(webhook_server, WEBHOOK_URL_PATH, {'/': {}})
+    cherrypy.quickstart(webhook_server, setup.WEBHOOK_URL_PATH, {'/': {}})

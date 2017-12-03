@@ -1,94 +1,118 @@
+# -*- coding: utf-8 -*-
+
+
 import config
 import text
-import utils
+import data
 import markup
-import message
 
 
-class Handler():
+class MessageHandler():
     def __init__(self, bot):
         self.bot = bot
-        self.msg = message.Message(bot)
         self.markup = markup.KeyboardMarkupFactory()
-        self.support_data = utils.SupportData()
+        self.data = data.UserDataHandler()
 
     def send_start(self, message):
         keyboard = self.markup.create_keyboard(**config.BUTTON_NAMES)
-        self.msg.send_start(message.chat.id,
-                            keyboard,
-                            config.INFO['start'])
+        self.bot.send_message(chat_id=message.chat.id,
+                              text=config.INFO['start'],
+                              reply_markup=keyboard)
 
     def send_about(self, message):
-        self.msg.send_command_message(message.chat.id,
-                                      config.INFO['about'])
+        self.bot.send_message(chat_id=message.chat.id,
+                              text=config.INFO['about'])
 
     def send_feedback(self, message):
-        self.msg.send_command_message(message.chat.id,
-                                      config.INFO['feedback'])
+        self.bot.send_message(chat_id=message.chat.id,
+                              text=config.INFO['feedback'])
 
     def send_advertising(self, message):
-        button = self.markup.create_url_inline_button('Перейти',
-                                                      config.ADVERTISING_LINK)
-        self.msg.send_url_inline_button(message.chat.id,
-                                        config.INFO['advertising'],
-                                        button)
+        button = self.markup.create_url_inline_button(button='Перейти',
+                                                      url=config.ADVERTISING_LINK)
+        self.bot.send_message(chat_id=message.chat.id,
+                              text=config.INFO['advertising'],
+                              reply_markup=button)
 
     def send_suggest(self, message):
-        self.msg.send_command_message(message.chat.id,
-                                      config.INFO['suggest'])
+        self.bot.send_message(chat_id=message.chat.id,
+                              text=config.INFO['suggest'])
 
     def send_ignore(self, message):
-        self.msg.send_user_message(message.chat.id,
-                                   text.IGNORE)
+        self.bot.send_message(chat_id=message.chat.id,
+                              text=text.IGNORE)
 
     def send_default_message(self, message):
-        self.msg.send_user_message(message.chat.id,
-                                   text.DEFAULT)
+        self.bot.send_message(chat_id=message.chat.id,
+                              text=text.DEFAULT)
 
-    def answer_callback_query(self, call):
-        text = self.support_data.get_text_inline_button()
-        self.msg.answer_callback_query(call,
-                                       text)
+    def processing_callback_request(self, call):
+        try:
+            self.data.upgrade_data(user_data=call)
+            alert_text = self.get_admin_action_callback_text()
+        except LookupError:
+            self.bot.send_message(chat_id=config.ADMIN_CHAT_ID,
+                                  text=text.MISTAKE)
+        else:
+            self.bot.answer_callback_query(callback_query_id=call.id,
+                                           text=alert_text,
+                                           show_alert=False)
+            self.data.check_admin_action()
 
     def handle_user_message(self, message):
-        self.support_data.set_data([message.chat.id,
-                                    message.chat.first_name])
-        inline_button = self.make_callback_button('Answer')
-        self.msg.forward_message(config.ADMIN_CHAT_ID,
-                                 message)
-        self.prepare_callback_button_text(inline_button)
+        self.data.set_data(user_data=[message.chat.id,
+                                      message.chat.first_name])
+        button = self.make_callback_button(button_name='Answer')
+        self.bot.forward_message(chat_id=config.ADMIN_CHAT_ID,
+                                 from_chat_id=message.chat.id,
+                                 message_id=message.message_id)
+        self.send_callback_button(inline_button=button)
 
     def handle_admin_message(self, message):
-        user_data = self.support_data.get_data()
-        if user_data['user_name']:
-            inline_button = self.make_callback_button('Reset')
-            user_data = self.support_data.get_data()
-            self.msg.send_user_message(user_data['cid'],
-                                       message.text)
-            self.prepare_callback_button_text(inline_button)
-        else:
-            self.msg.send_user_message(config.ADMIN_CHAT_ID,
-                                       text.EMPTY)
+        user_data = self.data.get_data()
+        try:
+            user_name = user_data['user_name']
+            if user_name is not None and len(user_name) > 0:
+                button = self.make_callback_button(button_name='Reset')
+                self.bot.send_message(chat_id=user_data['cid'],
+                                      text=message.text)
+                self.send_callback_button(inline_button=button)
+        except LookupError:
+            self.bot.send_message(chat_id=config.ADMIN_CHAT_ID,
+                                  text=text.MISTAKE)
 
-    def prepare_callback_button_text(self, button):
-        user_data = self.support_data.get_data()
-        action = user_data['action']
-        user_name = user_data['user_name']
+    def send_callback_button(self, inline_button):
+        notice_text = self.get_callback_button_text()
+        self.bot.send_message(chat_id=config.ADMIN_CHAT_ID,
+                              text=notice_text,
+                              reply_markup=inline_button)
+
+    def make_callback_button(self, button_name):
+        self.data.set_button(button=button_name)
+        user_data = self.data.get_data()
+        button = ' '.join([button_name,
+                           user_data['user_name']])
+        return self.markup.create_callback_inline_button(button=button,
+                                                         data=self.data.encode_data())
+
+    def get_admin_action_callback_text(self):
+        user_data = self.data.get_data()
+        name = user_data['user_name']
+        action = user_data['button_name']
+        alert_text = {
+            'Reset': 'Чат сброшен',
+            'Answer': 'Чат c {} выбран'.format(name),
+        }
+        return alert_text[action]
+
+    def get_callback_button_text(self):
+        user_data = self.data.get_data()
+        name = user_data['user_name']
+        action = user_data['button_name']
         action_to_state = {
             'Answer': 'от {}',
             'Reset': '{} отправлено',
         }
-        chat_state = action_to_state[action].format(user_name)
-        text = 'Сообщение {}'.format(chat_state)
-        self.msg.send_callback_inline_button(config.ADMIN_CHAT_ID,
-                                             text,
-                                             button)
-
-    def make_callback_button(self, button_name):
-        self.support_data.set_action(button_name)
-        user_data = self.support_data.get_data()
-        button = ' '.join([button_name,
-                           user_data['user_name']])
-        data = self.support_data.encode_data()
-        return self.markup.create_callback_inline_button(button,
-                                                         data)
+        chat_state = action_to_state[action].format(name)
+        notice_text = 'Сообщение {}'.format(chat_state)
+        return notice_text
