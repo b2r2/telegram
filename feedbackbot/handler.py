@@ -28,8 +28,8 @@ class MessageHandler():
                               text=config.INFO['feedback'])
 
     def send_advertising(self, message):
-        button = self.markup.create_url_inline_button('Перейти',
-                                                      config.ADVERTISING_LINK)
+        button = self.markup.create_url_inline_button(button='Перейти',
+                                                      url=config.ADVERTISING_LINK)
         self.bot.send_message(chat_id=message.chat.id,
                               text=config.INFO['advertising'],
                               reply_markup=button)
