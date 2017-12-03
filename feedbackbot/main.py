@@ -1,14 +1,11 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 
+import logging
 import telebot
 import handler
-from config import TOKEN, CONTENT_IGNORE_TYPES, ADMIN_CHAT_ID
-import logging
+from config import TOKEN, IGNORE_TYPES, ADMIN_CHAT_ID
 
-
-ignore_types = CONTENT_IGNORE_TYPES
 
 bot = telebot.AsyncTeleBot(TOKEN)
 handler = handler.MessageHandler(bot)
@@ -46,7 +43,7 @@ def command_suggest(message):
     handler.send_suggest(message)
 
 
-@bot.message_handler(func=lambda message: True, content_types=ignore_types)
+@bot.message_handler(func=lambda message: True, content_types=IGNORE_TYPES)
 def invalid_message(message):
     handler.send_ignore(message)
 

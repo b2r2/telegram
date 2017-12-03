@@ -1,10 +1,15 @@
+# -*- coding: utf-8 -*-
+
+
 from telebot import types
 
 
 class KeyboardMarkupFactory():
-    """ This method sets keyboard markup """
+    """ Create objects custom keyboard and inline buttons """
 
-    def create_keyboard(self, **buttons):
+    @staticmethod
+    def create_keyboard(**buttons):
+        """ Create objects custom keyboard """
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
                                            one_time_keyboard=False,
                                            row_width=2)
@@ -18,7 +23,9 @@ class KeyboardMarkupFactory():
 
         return markup
 
-    def create_callback_inline_button(self, button, data):
+    @staticmethod
+    def create_callback_inline_button(button, data):
+        """ Create objects custom inline callback button """
         markup = types.InlineKeyboardMarkup()
         callback = types.InlineKeyboardButton(text=button,
                                               callback_data=data)
@@ -26,7 +33,9 @@ class KeyboardMarkupFactory():
 
         return markup
 
-    def create_url_inline_button(self, button, url):
+    @staticmethod
+    def create_url_inline_button(button, url):
+        """ Create objects custom inline url button """
         markup = types.InlineKeyboardMarkup()
         url = types.InlineKeyboardButton(text=button,
                                          url=url)
