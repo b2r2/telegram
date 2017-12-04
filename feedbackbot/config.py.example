@@ -8,8 +8,3 @@ CONTENT_IGNORE_TYPES = ['audio', 'document', 'photo', 'sticker', 'video',
 BUTTON_NAMES = {
     'name': 'description',
 }
-INFO = {
-    'command name': (
-        'text'
-    ),
-}
