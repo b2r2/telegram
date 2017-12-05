@@ -1,10 +1,10 @@
-TOKEN = 'token ID'
-ADMIN_CHAT_ID = '123456' # your_target_chat_ID
-SHORT_LINK = '@your_short_channel_link'
-LINK = 'https://your_channel_link'
+TOKEN = '<TOKEN>'
+ADMIN_CHAT_ID = 123456789 # <your target chat ID>
+SHORT_LINK = '<@your short channel link>'
+LINK = '<https://your channel link>'
 ADVERTISING_LINK = 'your link to the advertising post'
 CONTENT_IGNORE_TYPES = ['audio', 'document', 'photo', 'sticker', 'video',
 		        'video_note', 'voice', 'location', 'contact']
 BUTTON_NAMES = {
-    'name': 'description',
+    '<command name>': '<description>',
 }
