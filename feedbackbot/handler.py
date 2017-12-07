@@ -48,7 +48,7 @@ class MessageHandler():
 
     def processing_callback_request(self, call):
         try:
-            self.data.upgrade_data(user_data=call)
+            self.data.upgrade_data(data=call)
             alert_text = self.get_admin_action_callback_text()
         except LookupError:
             self.bot.send_message(chat_id=config.ADMIN_CHAT_ID,
