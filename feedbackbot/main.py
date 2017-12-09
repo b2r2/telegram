@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
 
+import cherrypy
 import logging
+import setup
 import telebot
+import webhook
 import handler
 import utils
 from config import TOKEN, IGNORE_TYPES, ADMIN_CHAT_ID
@@ -11,6 +14,7 @@ from config import TOKEN, IGNORE_TYPES, ADMIN_CHAT_ID
 bot = telebot.AsyncTeleBot(TOKEN)
 handler = handler.MessageHandler(bot)
 
+webhook_server = webhook.WebhookServer(bot)
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
 
@@ -67,5 +71,23 @@ def handle_callback(call):
     handler.processing_callback_request(call)
 
 
+bot.remove_webhook()
+bot.set_webhook(url=setup.WEBHOOK_URL_BASE+setup.WEBHOOK_URL_PATH,
+                certificate=open(setup.WEBHOOK_SSL_CERT, 'r'))
+
+access_log = cherrypy.log.access_log
+for log_handler in tuple(access_log.handlers):
+    access_log.removeHandler(log_handler)
+
+cherrypy.config.update(
+    {
+        'server.socket_host': setup.WEBHOOK_LISTEN,
+        'server.socket_port': setup.WEBHOOK_PORT,
+        'server.ssl_module': 'builtin',
+        'server.ssl_certificate': setup.WEBHOOK_SSL_CERT,
+        'server.ssl_private_key': setup.WEBHOOK_SSL_PRIV
+    }
+)
+
 if __name__ == '__main__':
-    bot.polling(none_stop=True, interval=0)
+    cherrypy.quickstart(webhook_server, setup.WEBHOOK_URL_PATH, {'/': {}})
