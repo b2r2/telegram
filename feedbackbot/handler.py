@@ -4,17 +4,16 @@
 import config
 import text
 import data
-import markup
+import utils
 
 
 class MessageHandler():
     def __init__(self, bot):
         self.bot = bot
-        self.markup = markup.KeyboardMarkupFactory()
         self.data = data.UserDataHandler()
 
     def send_start(self, message):
-        keyboard = self.markup.create_keyboard(**config.BUTTON_NAMES)
+        keyboard = utils.create_keyboard(**config.BUTTON_NAMES)
         self.bot.send_message(chat_id=message.chat.id,
                               text=text.INFO['start'],
                               reply_markup=keyboard)
@@ -28,8 +27,8 @@ class MessageHandler():
                               text=text.INFO['feedback'])
 
     def send_advertising(self, message):
-        button = self.markup.create_url_inline_button(button='Перейти',
-                                                      url=config.ADVERTISING_LINK)
+        button = utils.create_url_inline_button(button='Перейти',
+                                                url=config.ADVERTISING_LINK)
         self.bot.send_message(chat_id=message.chat.id,
                               text=text.INFO['advertising'],
                               reply_markup=button)
@@ -57,7 +56,7 @@ class MessageHandler():
             self.bot.answer_callback_query(callback_query_id=call.id,
                                            text=alert_text,
                                            show_alert=False)
-            self.data.check_admin_action()
+            self.data.is_check_admin_action()
 
     def handle_user_message(self, message):
         self.data.set_data(user_data=[message.chat.id,
@@ -92,8 +91,8 @@ class MessageHandler():
         user_data = self.data.get_data()
         button = ' '.join([button_name,
                            user_data['user_name']])
-        return self.markup.create_callback_inline_button(button=button,
-                                                         data=self.data.encode_data())
+        return utils.create_callback_inline_button(button=button,
+                                                   data=self.data.encode_data())
 
     def get_admin_action_callback_text(self):
         user_data = self.data.get_data()

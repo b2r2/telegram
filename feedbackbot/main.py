@@ -4,6 +4,7 @@
 import logging
 import telebot
 import handler
+import utils
 from config import TOKEN, IGNORE_TYPES, ADMIN_CHAT_ID
 
 
@@ -61,7 +62,7 @@ def send_message(message):
     handler.handle_admin_message(message)
 
 
-@bot.callback_query_handler(func=lambda call: len(call.data) > 0)
+@bot.callback_query_handler(func=utils.is_check_data)
 def handle_callback(call):
     handler.processing_callback_request(call)
 
