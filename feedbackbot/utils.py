@@ -1,31 +1,38 @@
-import json
+from telebot import types
 
 
-class SupportData():
-    def __init__(self):
-        self.data = {}
+def is_check_data(message):
+    return isinstance(message.data, str) and len(message.data) > 0
 
-    def encode_data(self, message, button):
-        self.data = {
-            'cid': message.chat.id,
-            'action': button,
-            'user_name': message.chat.first_name,
-        }
-        return json.dumps(self.data)
 
-    def get_data(self):
-        return self.data
+def create_keyboard(**buttons):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
+                                       one_time_keyboard=False,
+                                       row_width=2)
+    about = types.KeyboardButton(buttons['about'])
+    feedback = types.KeyboardButton(buttons['feedback'])
+    advertising = types.KeyboardButton(buttons['advertising'])
+    suggest = types.KeyboardButton(buttons['suggest'])
 
-    def get_formatted_text(self):
-        user_name = self.data['user_name']
-        action = self.data['action']
-        text = {
-            'Reset': 'Чат сброшен',
-            'Answer': 'Чат c {} выбран'.format(user_name),
-        }
-        if action == 'Reset':
-            self.data = {}
-        return text[action]
+    markup.add(about, feedback)
+    markup.add(advertising, suggest)
 
-    def get_text_inline_button(self):
-        return self.get_formatted_text()
+    return markup
+
+
+def create_callback_inline_button(button, data):
+    markup = types.InlineKeyboardMarkup()
+    callback = types.InlineKeyboardButton(text=button,
+                                          callback_data=data)
+    markup.add(callback)
+
+    return markup
+
+
+def create_url_inline_button(button, url):
+    markup = types.InlineKeyboardMarkup()
+    callback = types.InlineKeyboardButton(text=button,
+                                          url=url)
+    markup.add(callback)
+
+    return markup
