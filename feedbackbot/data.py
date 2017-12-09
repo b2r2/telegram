@@ -11,10 +11,6 @@ class UserDataHandler():
     def encode_data(self):
         return json.dumps(self.data)
 
-    @staticmethod
-    def decode_data(call):
-        return json.loads(call.data)
-
     def set_data(self, user_data):
         self.data = {
             'cid': user_data[0],
@@ -28,11 +24,11 @@ class UserDataHandler():
     def get_data(self):
         return self.data
 
-    def upgrade_data(self, user_data):
-        self.data = self.decode_data(user_data)
+    def upgrade_data(self, data):
+        self.data = json.loads(data.data)
 
-    def check_admin_action(self):
-        if self.data['button_name'] in 'Reset':
+    def is_check_admin_action(self):
+        if self.data['button_name'].count('Reset') > 0:
             self.clear_data()
 
     def clear_data(self):
