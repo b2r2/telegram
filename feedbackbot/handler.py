@@ -56,7 +56,7 @@ class MessageHandler():
             self.bot.answer_callback_query(callback_query_id=call.id,
                                            text=alert_text,
                                            show_alert=False)
-            self.data.is_check_admin_action()
+            self.data.is_admin_action()
 
     def handle_user_message(self, message):
         self.data.set_data(user_data=[message.chat.id,

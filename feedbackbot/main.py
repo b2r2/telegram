@@ -62,7 +62,7 @@ def send_message(message):
     handler.handle_admin_message(message)
 
 
-@bot.callback_query_handler(func=utils.is_check_data)
+@bot.callback_query_handler(func=utils.is_data)
 def handle_callback(call):
     handler.processing_callback_request(call)
 
