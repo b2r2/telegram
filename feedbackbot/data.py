@@ -32,4 +32,5 @@ class UserDataHandler():
             self.clear_data()
 
     def clear_data(self):
-        self.data.clear()
+        for key in self.data.keys():
+            self.data[key] = None

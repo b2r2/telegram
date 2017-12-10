@@ -69,14 +69,14 @@ class MessageHandler():
 
     def handle_admin_message(self, message):
         user_data = self.data.get_data()
-        try:
-            user_name = user_data['user_name']
-            if user_name is not None and len(user_name) > 0:
-                button = self.make_callback_button(button_name='Reset')
-                self.bot.send_message(chat_id=user_data['cid'],
-                                      text=message.text)
-                self.send_callback_button(inline_button=button)
-        except LookupError:
+        user_name = user_data['user_name']
+        is_user_name = user_name is not None
+        if is_user_name and len(user_name) > 0:
+            button = self.make_callback_button(button_name='Reset')
+            self.bot.send_message(chat_id=user_data['cid'],
+                                  text=message.text)
+            self.send_callback_button(inline_button=button)
+        else:
             self.bot.send_message(chat_id=config.ADMIN_CHAT_ID,
                                   text=text.MISTAKE)
 

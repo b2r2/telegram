@@ -12,7 +12,7 @@ bot = telebot.AsyncTeleBot(TOKEN)
 handler = handler.MessageHandler(bot)
 
 logger = telebot.logger
-telebot.logger.setLevel(logging.INFO)
+telebot.logger.setLevel(logging.DEBUG)
 
 
 @bot.message_handler(commands=['start'])
