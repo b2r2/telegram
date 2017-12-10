@@ -56,15 +56,16 @@ class MessageHandler():
             self.bot.answer_callback_query(callback_query_id=call.id,
                                            text=alert_text,
                                            show_alert=False)
-            self.data.is_admin_action()
+            if self.data.is_admin_action():
+                self.data.clear_data()
 
     def handle_user_message(self, message):
         self.data.set_data(user_data=[message.chat.id,
                                       message.chat.first_name])
-        button = self.make_callback_button(button_name='Answer')
         self.bot.forward_message(chat_id=config.ADMIN_CHAT_ID,
                                  from_chat_id=message.chat.id,
                                  message_id=message.message_id)
+        button = self.make_callback_button(button_name='Answer')
         self.send_callback_button(inline_button=button)
 
     def handle_admin_message(self, message):
