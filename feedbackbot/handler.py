@@ -46,18 +46,13 @@ class MessageHandler():
                               text=text.DEFAULT)
 
     def processing_callback_request(self, call):
-        try:
-            self.data.upgrade_data(data=call)
-            alert_text = self.get_admin_action_callback_text()
-        except LookupError:
-            self.bot.send_message(chat_id=config.ADMIN_CHAT_ID,
-                                  text=text.MISTAKE)
-        else:
-            self.bot.answer_callback_query(callback_query_id=call.id,
-                                           text=alert_text,
-                                           show_alert=False)
-            if self.data.is_admin_action():
-                self.data.clear_data()
+        self.data.upgrade_data(data=call)
+        alert_text = self.get_admin_action_callback_text()
+        self.bot.answer_callback_query(callback_query_id=call.id,
+                                       text=alert_text,
+                                       show_alert=False)
+        if self.data.is_admin_action():
+            self.data.clear_data()
 
     def handle_user_message(self, message):
         self.data.set_data(user_data=[message.chat.id,
