@@ -1,7 +1,7 @@
 from telebot import types
 
 
-def is_check_data(message):
+def is_data(message):
     return isinstance(message.data, str) and len(message.data) > 0
 
 

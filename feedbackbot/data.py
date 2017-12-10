@@ -27,9 +27,10 @@ class UserDataHandler():
     def upgrade_data(self, data):
         self.data = json.loads(data.data)
 
-    def is_check_admin_action(self):
-        if self.data['button_name'].count('Reset') > 0:
+    def is_admin_action(self):
+        if self.data['button_name'] == 'Reset':
             self.clear_data()
 
     def clear_data(self):
-        self.data.clear()
+        for key in self.data.keys():
+            self.data[key] = None

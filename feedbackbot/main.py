@@ -16,7 +16,7 @@ handler = handler.MessageHandler(bot)
 
 webhook_server = webhook.WebhookServer(bot)
 logger = telebot.logger
-telebot.logger.setLevel(logging.INFO)
+telebot.logger.setLevel(logging.DEBUG)
 
 
 @bot.message_handler(commands=['start'])
@@ -66,7 +66,7 @@ def send_message(message):
     handler.handle_admin_message(message)
 
 
-@bot.callback_query_handler(func=utils.is_check_data)
+@bot.callback_query_handler(func=utils.is_data)
 def handle_callback(call):
     handler.processing_callback_request(call)
 
