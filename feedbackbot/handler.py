@@ -60,15 +60,15 @@ class MessageHandler():
         self.bot.forward_message(chat_id=config.ADMIN_CHAT_ID,
                                  from_chat_id=message.chat.id,
                                  message_id=message.message_id)
-        button = self.make_callback_button(button_name='Answer')
+        button = self.make_callback_button(button_name=config.ANSWER)
         self.send_callback_button(inline_button=button)
 
     def handle_admin_message(self, message):
         user_data = self.data.get_data()
-        user_name = user_data['user_name']
+        user_name = user_data['usr']
         is_user_name = user_name is not None
         if is_user_name and len(user_name) > 0:
-            button = self.make_callback_button(button_name='Reset')
+            button = self.make_callback_button(button_name=config.RESET)
             self.bot.send_message(chat_id=user_data['cid'],
                                   text=message.text)
             self.send_callback_button(inline_button=button)
@@ -86,27 +86,27 @@ class MessageHandler():
         self.data.set_button(button=button_name)
         user_data = self.data.get_data()
         button = ' '.join([button_name,
-                           user_data['user_name']])
+                           user_data['usr']])
         return utils.create_callback_inline_button(button=button,
                                                    data=self.data.encode_data())
 
     def get_admin_action_callback_text(self):
         user_data = self.data.get_data()
-        name = user_data['user_name']
-        action = user_data['button_name']
+        name = user_data['usr']
+        action = user_data['btn']
         alert_text = {
-            'Reset': 'Чат сброшен',
-            'Answer': 'Чат c {} выбран'.format(name),
+            config.ANSWER: 'Чат c {} выбран'.format(name),
+            config.RESET: 'Чат сброшен',
         }
         return alert_text[action]
 
     def get_callback_button_text(self):
         user_data = self.data.get_data()
-        name = user_data['user_name']
-        action = user_data['button_name']
+        name = user_data['usr']
+        action = user_data['btn']
         action_to_state = {
-            'Answer': 'от {}',
-            'Reset': '{} отправлено',
+            config.ANSWER: 'от {}',
+            config.RESET: '{} отправлено',
         }
         chat_state = action_to_state[action].format(name)
         notice_text = 'Сообщение {}'.format(chat_state)

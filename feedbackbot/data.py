@@ -2,11 +2,12 @@
 
 
 import json
+from config import RESET
 
 
 class UserDataHandler():
     def __init__(self):
-        self.data = dict.fromkeys(['cid', 'user_name', 'button_name'])
+        self.data = dict.fromkeys(['cid', 'usr', 'btn'])
 
     def encode_data(self):
         return json.dumps(self.data)
@@ -14,12 +15,12 @@ class UserDataHandler():
     def set_data(self, user_data):
         self.data = {
             'cid': user_data[0],
-            'user_name': user_data[1],
+            'usr': user_data[1],
         }
 
     def set_button(self, button):
         """ append 'button name' in self.data """
-        self.data.update({'button_name': button})
+        self.data.update({'btn': button})
 
     def get_data(self):
         return self.data
@@ -28,7 +29,7 @@ class UserDataHandler():
         self.data = json.loads(data.data)
 
     def is_admin_action(self):
-        return self.data['button_name'] == 'Reset'
+        return self.data['btn'] == RESET
 
     def clear_data(self):
         for key in self.data.keys():
