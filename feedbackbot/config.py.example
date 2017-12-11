@@ -8,3 +8,5 @@ CONTENT_IGNORE_TYPES = ['audio', 'document', 'photo', 'sticker', 'video',
 BUTTON_NAMES = {
     '<command name>': '<description>',
 }
+ANSWER = <emoji code>
+RESET = <emoji code>
