@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 
-import json
 from config import RESET
+from ast import literal_eval
 
 
 class UserDataHandler():
     def __init__(self):
         self.data = dict.fromkeys(['cid', 'usr', 'btn'])
 
-    def encode_data(self):
-        return json.dumps(self.data)
+    def convert_by_data_string(self):
+        return str(self.data)
 
     def set_data(self, user_data):
         self.data = {
@@ -26,7 +26,7 @@ class UserDataHandler():
         return self.data
 
     def upgrade_data(self, data):
-        self.data = json.loads(data.data)
+        self.data = literal_eval(data.data)
 
     def is_admin_action(self):
         return self.data['btn'] == RESET
