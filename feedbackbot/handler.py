@@ -88,7 +88,7 @@ class MessageHandler():
         button = ' '.join([button_name,
                            user_data['usr']])
         return utils.create_callback_inline_button(button=button,
-                                                   data=self.data.convert_by_data_string())
+                                                   data=self.data.convert_data_to_string())
 
     def get_admin_action_callback_text(self):
         user_data = self.data.get_data()

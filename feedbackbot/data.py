@@ -9,7 +9,7 @@ class UserDataHandler():
     def __init__(self):
         self.data = dict.fromkeys(['cid', 'usr', 'btn'])
 
-    def convert_by_data_string(self):
+    def convert_data_to_string(self):
         return str(self.data)
 
     def set_data(self, user_data):
