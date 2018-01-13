@@ -55,6 +55,9 @@ class MessageHandler():
             self.data.clear_data()
 
     def handle_user_message(self, message):
+        if message.photo:
+            self.bot.send_photo(chat_id=config.ADMIN_CHAT_ID,
+                                photo=message.photo)
         self.data.set_data(user_data=[message.chat.id,
                                       message.chat.first_name])
         self.bot.forward_message(chat_id=config.ADMIN_CHAT_ID,

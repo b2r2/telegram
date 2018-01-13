@@ -50,7 +50,7 @@ def invalid_message(message):
 
 
 @bot.message_handler(func=lambda message: message.chat.id != ADMIN_CHAT_ID,
-                     content_types=['text'])
+                     content_types=['text', 'photo'])
 def receive_message(message):
     handler.send_default_message(message)
     handler.handle_user_message(message)
