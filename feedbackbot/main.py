@@ -15,33 +15,9 @@ logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
 
 
-@bot.message_handler(commands=['start'])
-def command_start(message):
-    handler.send_start(message)
-
-
-@bot.message_handler(commands=['about'])
-@bot.message_handler(func=lambda message: message.text == u'О канале')
-def command_about(message):
-    handler.send_about(message)
-
-
-@bot.message_handler(commands=['feedback'])
-@bot.message_handler(func=lambda message: message.text == u'Отзывы и предложения')
-def command_feedback(message):
-    handler.send_feedback(message)
-
-
-@bot.message_handler(commands=['advertising'])
-@bot.message_handler(func=lambda message: message.text == u'Условия рекламы')
-def command_advertising(message):
-    handler.send_advertising(message)
-
-
-@bot.message_handler(commands=['suggest'])
-@bot.message_handler(func=lambda message: message.text == u'Предложить новость')
-def command_suggest(message):
-    handler.send_suggest(message)
+@bot.message_handler(func=utils.is_command)
+def handle_command(message):
+    handler.send_command(message)
 
 
 @bot.message_handler(func=lambda message: True, content_types=IGNORE_TYPES)

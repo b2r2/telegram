@@ -12,30 +12,10 @@ class MessageHandler():
         self.bot = bot
         self.data = data.UserDataHandler()
 
-    def send_start(self, message):
-        keyboard = utils.create_keyboard(**config.BUTTON_NAMES)
+    def send_command(self, message):
         self.bot.send_message(chat_id=message.chat.id,
-                              text=text.INFO['start'],
-                              reply_markup=keyboard)
-
-    def send_about(self, message):
-        self.bot.send_message(chat_id=message.chat.id,
-                              text=text.INFO['about'])
-
-    def send_feedback(self, message):
-        self.bot.send_message(chat_id=message.chat.id,
-                              text=text.INFO['feedback'])
-
-    def send_advertising(self, message):
-        button = utils.create_url_inline_button(button='Перейти',
-                                                url=config.ADVERTISING_LINK)
-        self.bot.send_message(chat_id=message.chat.id,
-                              text=text.INFO['advertising'],
-                              reply_markup=button)
-
-    def send_suggest(self, message):
-        self.bot.send_message(chat_id=message.chat.id,
-                              text=text.INFO['suggest'])
+                              text=utils.get_command_message(message.text),
+                              reply_markup=utils.get_markup(message.text))
 
     def send_ignore(self, message):
         self.bot.send_message(chat_id=message.chat.id,
