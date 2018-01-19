@@ -41,6 +41,11 @@ def get_command_message(text):
     return get_value(command)
 
 
+def get_chat(name):
+    chat_name = get_chat(name)
+    return chat_name
+
+
 def create_keyboard(**buttons):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
                                        one_time_keyboard=False,
