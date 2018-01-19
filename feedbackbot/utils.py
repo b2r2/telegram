@@ -28,9 +28,9 @@ def get_keys(text):
 def get_markup(text):
     command = get_keys(text)
     markup = None
-    if command.__eq__(('/start',)):
+    if command == ('/start',):
         markup = create_keyboard(**BUTTON_NAMES)
-    elif command.__eq__(('/advertising', u'Условия рекламы')):
+    elif command == ('/advertising', u'Условия рекламы'):
         markup = create_url_inline_button(button='Перейти',
                                           url=ADVERTISING_LINK)
     return markup
