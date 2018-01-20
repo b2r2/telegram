@@ -16,13 +16,18 @@ telebot.logger.setLevel(logging.DEBUG)
 
 
 @bot.message_handler(func=utils.is_command)
-def handle_command(message):
+def sending_command(message):
     handler.send_command(message)
 
 
-@bot.message_handler(func=lambda message: True)
-def forward_message(message):
+@bot.message_handler(func=lambda message: message.chat.type in 'supergroup')
+def sending_message(message):
     handler.send_message(message)
+
+
+@bot.message_handler(func=lambda message: message.chat.type in 'private')
+def forwarding_message(message):
+    handler.forward_message(message)
 
 
 if __name__ == '__main__':
