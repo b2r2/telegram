@@ -1,8 +1,11 @@
 from telebot import types
-from text import INFO
-from text import COMMANDS
-from config import BUTTON_NAMES
+from text import ENGLISH_COMMANDS
+from text import RUSSIAN_COMMANDS
+from text import DESCRIPTION
 from config import ADVERTISING_LINK
+
+
+TEXT_MESSAGES = dict(zip(zip(ENGLISH_COMMANDS, RUSSIAN_COMMANDS), DESCRIPTION))
 
 
 def is_data(message):
@@ -10,26 +13,26 @@ def is_data(message):
 
 
 def is_command(message):
-    return any(message.text in x for x in COMMANDS)
+    return any(message.text in x for x in TEXT_MESSAGES.keys())
 
 
 def get_value(text):
     key = get_keys(text)
-    return INFO[key]
+    return TEXT_MESSAGES[key]
 
 
 def get_keys(text):
-    for keys in INFO.keys():
+    for keys in TEXT_MESSAGES.keys():
         for key in keys:
-            if key in text:
+            if key == text:
                 return keys
 
 
 def get_markup(text):
     command = get_keys(text)
     markup = None
-    if command == ('/start',):
-        markup = create_keyboard(**BUTTON_NAMES)
+    if command == ('/start', None):
+        markup = create_keyboard(RUSSIAN_COMMANDS[1:])
     elif command == ('/advertising', u'Условия рекламы'):
         markup = create_url_inline_button(button='Перейти',
                                           url=ADVERTISING_LINK)
@@ -38,30 +41,23 @@ def get_markup(text):
 
 def get_command_message(text):
     command = get_keys(text)
-    return get_value(command)
+    return get_value(command[0])
 
 
-def get_chat(name):
-    chat_name = get_chat(name)
-    return chat_name
-
-
-def create_keyboard(**buttons):
+def create_keyboard(commands):
+    buttons = []
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
                                        one_time_keyboard=False,
                                        row_width=2)
-    about = types.KeyboardButton(buttons['about'])
-    feedback = types.KeyboardButton(buttons['feedback'])
-    advertising = types.KeyboardButton(buttons['advertising'])
-    suggest = types.KeyboardButton(buttons['suggest'])
+    for command in commands:
+        buttons.append(types.KeyboardButton(command))
 
-    markup.add(about, feedback)
-    markup.add(advertising, suggest)
+    markup.add(*[btn for btn in buttons[:2]])
+    markup.add(*[btn for btn in buttons[2:]])
 
     return markup
 
 
-# DELETE
 def create_callback_inline_button(button, data):
     markup = types.InlineKeyboardMarkup()
     callback = types.InlineKeyboardButton(text=button,
@@ -78,7 +74,3 @@ def create_url_inline_button(button, url):
     markup.add(callback)
 
     return markup
-
-
-if __name__ == '__main__':
-    print(is_command('/start'))
