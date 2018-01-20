@@ -15,11 +15,16 @@ class MessageHandler():
                               reply_markup=utils.get_markup(message.text))
 
     def send_message(self, message):
-        if message.chat.type == 'supergroup':
+        try:
             user_chat_id = message.reply_to_message.forward_from.id
+        except AttributeError:
+            self.bot.send_message(chat_id=message.chat.id,
+                                  text='Error! Please select reply message.')
+        else:
             self.bot.send_message(chat_id=user_chat_id,
                                   text=message.text)
-        else:
-            self.bot.forward_message(chat_id=GROUP_ID,
-                                     from_chat_id=message.chat.id,
-                                     message_id=message.message_id)
+
+    def forward_message(self, message):
+        self.bot.forward_message(chat_id=GROUP_ID,
+                                 from_chat_id=message.chat.id,
+                                 message_id=message.message_id)
