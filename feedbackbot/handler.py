@@ -19,7 +19,7 @@ class MessageHandler():
             user_chat_id = message.reply_to_message.forward_from.id
         except AttributeError:
             self.bot.send_message(chat_id=message.chat.id,
-                                  text='Error! Please select reply message.')
+                                  text='Please select reply message.')
         else:
             self.bot.send_message(chat_id=user_chat_id,
                                   text=message.text)
