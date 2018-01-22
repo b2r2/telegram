@@ -44,6 +44,14 @@ def get_command_message(text):
     return get_value(command[0])
 
 
+def get_chat_id(obj):
+    try:
+        chat_id = obj.reply_to_message.forward_from.id
+    except AttributeError:
+        chat_id = None
+    return chat_id
+
+
 def create_keyboard(commands):
     buttons = []
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True,
