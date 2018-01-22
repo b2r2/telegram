@@ -3,3 +3,5 @@ GROUP_ID = '<group_id>'
 SHORT_LINK = '<@your short channel link>'
 LINK = '<https://your channel link>'
 ADVERTISING_LINK = <'your link to the advertising post'>
+IGNORE_TYPES = [<your ignore types>]
+CONTENT_TYPES = [<your handled content types>]
