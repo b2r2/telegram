@@ -8,7 +8,9 @@ import telebot
 import webhook
 import handler
 import utils
-from config import TOKEN, IGNORE_TYPES, ADMIN_CHAT_ID
+from config import TOKEN
+from config import IGNORE_TYPES
+from config import CONTENT_TYPES
 
 
 bot = telebot.AsyncTeleBot(TOKEN)
@@ -19,56 +21,28 @@ logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG)
 
 
-@bot.message_handler(commands=['start'])
-def command_start(message):
-    handler.send_start(message)
+@bot.message_handler(func=utils.is_command)
+def sending_command(message):
+    handler.send_command(message)
 
 
-@bot.message_handler(commands=['about'])
-@bot.message_handler(func=lambda message: message.text == u'О канале')
-def command_about(message):
-    handler.send_about(message)
+@bot.message_handler(func=lambda message: message.chat.type in 'supergroup',
+                     content_types=['text', 'photo', 'sticker'])
+def sending_message(message):
+    handler.sending(message)
 
 
-@bot.message_handler(commands=['feedback'])
-@bot.message_handler(func=lambda message: message.text == u'Отзывы и предложения')
-def command_feedback(message):
-    handler.send_feedback(message)
+@bot.message_handler(func=lambda message: message.chat.type in 'supergroup',
+                     content_types=IGNORE_TYPES)
+def sending_error(message):
+    handler.send_error(message.chat.id,
+                       'Please sending only text, photo or sticker')
 
 
-@bot.message_handler(commands=['advertising'])
-@bot.message_handler(func=lambda message: message.text == u'Условия рекламы')
-def command_advertising(message):
-    handler.send_advertising(message)
-
-
-@bot.message_handler(commands=['suggest'])
-@bot.message_handler(func=lambda message: message.text == u'Предложить новость')
-def command_suggest(message):
-    handler.send_suggest(message)
-
-
-@bot.message_handler(func=lambda message: True, content_types=IGNORE_TYPES)
-def invalid_message(message):
-    handler.send_ignore(message)
-
-
-@bot.message_handler(func=lambda message: message.chat.id != ADMIN_CHAT_ID,
-                     content_types=['text'])
-def receive_message(message):
-    handler.send_default_message(message)
-    handler.handle_user_message(message)
-
-
-@bot.message_handler(func=lambda message: message.chat.id == ADMIN_CHAT_ID,
-                     content_types=['text'])
-def send_message(message):
-    handler.handle_admin_message(message)
-
-
-@bot.callback_query_handler(func=utils.is_data)
-def handle_callback(call):
-    handler.processing_callback_request(call)
+@bot.message_handler(func=lambda message: message.chat.type in 'private',
+                     content_types=CONTENT_TYPES)
+def forwarding_message(message):
+    handler.forward_message(message)
 
 
 bot.remove_webhook()
