@@ -1,4 +1,0 @@
-token = "token ID"
-log = 'path log file'
-clog = 'path copy log file'
-db = 'path database'
